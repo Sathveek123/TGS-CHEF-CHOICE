@@ -1,0 +1,13 @@
+RewriteEngine On
+
+# Redirect external .html requests to extensionless URLs
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([^\ ]+)\.html\ HTTP/ [NC]
+RewriteRule ^(.*)\.html$ /$1 [R=301,L]
+
+# Internally forward clean URLs to .html files
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^([^\.]+)$ $1.html [NC,L]
+
+# Serve custom 404 page if file/dir not found
+ErrorDocument 404 /404.html
