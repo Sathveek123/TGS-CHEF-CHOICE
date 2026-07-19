@@ -38,21 +38,35 @@
       <h1 class="about__title">Every Category, One Uncompromised Standard</h1>
       <p class="about__lede">Fresh local ingredients, wok-flamed perfection, and unhurried preparation — made to order at our Kasibugga kitchen.</p>
       <div style="margin-top: 24px; display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
-        <button onclick="window.print()" class="btn btn--ghost" style="padding: 10px 20px; font-size: 12px;">🖨️ Print / Save Menu Card</button>
         <a href="order" class="btn btn--gold" style="padding: 10px 20px; font-size: 12px;">Reserve Table with Dish</a>
       </div>
     </section>
 
     <!-- Filter Bar -->
     <section style="background: #FFFFFF; border-bottom: 1px solid #E2E8F0; padding: 20px 6vw;">
-      <div style="max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
-        <div style="flex: 1; min-width: 260px; position: relative;">
+      <div style="max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+        <!-- Search -->
+        <div style="flex: 2; min-width: 260px; position: relative;">
           <input type="text" id="menuSearch" placeholder="🔍 Search dishes (e.g. Chicken 555, Biryani, Waffle...)" style="width: 100%; padding: 12px 18px; border-radius: 30px; border: 1.5px solid #CBD5E1; font-size: 0.95rem; outline: none; transition: border-color 0.2s; font-family: var(--font-body);">
         </div>
-        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; font-weight: 700; color: var(--text-dark); font-size: 0.9rem;">
-          <input type="checkbox" id="vegToggle" style="width: 18px; height: 18px; accent-color: #16A34A; cursor: pointer;">
-          <span>🌿 Veg Only</span>
-        </label>
+        
+        <!-- Type Filter -->
+        <div style="flex: 1; min-width: 180px;">
+          <select id="typeFilter" style="width: 100%; padding: 12px 16px; border-radius: 30px; border: 1.5px solid #CBD5E1; font-size: 0.9rem; outline: none; background-color: #FFFFFF; font-family: var(--font-body); font-weight: 600; color: var(--text-dark); cursor: pointer;">
+            <option value="all">🍽️ All Food Types</option>
+            <option value="veg">🌿 Veg Only</option>
+            <option value="nonveg">🥩 Non-Veg Only</option>
+          </select>
+        </div>
+        
+        <!-- Price Sort -->
+        <div style="flex: 1; min-width: 180px;">
+          <select id="priceSort" style="width: 100%; padding: 12px 16px; border-radius: 30px; border: 1.5px solid #CBD5E1; font-size: 0.9rem; outline: none; background-color: #FFFFFF; font-family: var(--font-body); font-weight: 600; color: var(--text-dark); cursor: pointer;">
+            <option value="default">⚖️ Sort: Default</option>
+            <option value="low-high">📈 Price: Low to High</option>
+            <option value="high-low">📉 Price: High to Low</option>
+          </select>
+        </div>
       </div>
     </section>
 
@@ -420,27 +434,73 @@
 
   <script src="main.js"></script>
   <script>
-    const searchInput = document.getElementById('menuSearch');
-    const vegToggle   = document.getElementById('vegToggle');
-    const menuItems   = document.querySelectorAll('.menu__item');
+    // Stamp original index for default sorting restore
+    document.querySelectorAll('.menu__grid-2col').forEach(grid => {
+      const items = grid.querySelectorAll('.menu__item');
+      items.forEach((item, index) => {
+        item.setAttribute('data-index', index);
+      });
+    });
 
-    function filterMenu() {
-      const q       = searchInput ? searchInput.value.toLowerCase().trim() : '';
-      const vegOnly = vegToggle ? vegToggle.checked : false;
-      menuItems.forEach(item => {
-        const name = item.querySelector('h3').textContent.toLowerCase();
-        const desc = item.querySelector('p') ? item.querySelector('p').textContent.toLowerCase() : '';
-        const isVeg = item.getAttribute('data-veg') === 'true';
-        const ok = (!q || name.includes(q) || desc.includes(q)) && (!vegOnly || isVeg);
-        item.style.display = ok ? 'grid' : 'none';
+    const searchInput = document.getElementById('menuSearch');
+    const typeFilter  = document.getElementById('typeFilter');
+    const priceSort   = document.getElementById('priceSort');
+    const categories  = document.querySelectorAll('.menu__category');
+
+    function filterAndSortMenu() {
+      const q = searchInput.value.toLowerCase().trim();
+      const type = typeFilter.value; // 'all', 'veg', 'nonveg'
+      const sortVal = priceSort.value; // 'default', 'low-high', 'high-low'
+
+      categories.forEach(category => {
+        const grid = category.querySelector('.menu__grid-2col');
+        if (!grid) return;
+        
+        const items = Array.from(grid.querySelectorAll('.menu__item'));
+        let visibleCount = 0;
+
+        items.forEach(item => {
+          const name = item.querySelector('h3').textContent.toLowerCase();
+          const desc = item.querySelector('p') ? item.querySelector('p').textContent.toLowerCase() : '';
+          const isVeg = item.getAttribute('data-veg') === 'true';
+
+          // Check type match
+          let typeMatch = true;
+          if (type === 'veg') typeMatch = isVeg;
+          if (type === 'nonveg') typeMatch = !isVeg;
+
+          // Check query match
+          const queryMatch = !q || name.includes(q) || desc.includes(q);
+
+          const visible = typeMatch && queryMatch;
+          item.style.display = visible ? 'grid' : 'none';
+          if (visible) visibleCount++;
+        });
+
+        // Apply Price Sorting
+        if (sortVal !== 'default') {
+          items.sort((a, b) => {
+            const priceA = parseInt(a.querySelector('.menu__item-price').textContent.replace(/[^\d]/g, '')) || 0;
+            const priceB = parseInt(b.querySelector('.menu__item-price').textContent.replace(/[^\d]/g, '')) || 0;
+            return sortVal === 'low-high' ? priceA - priceB : priceB - priceA;
+          });
+          items.forEach(item => grid.appendChild(item));
+        } else {
+          // Restore default sorting
+          items.sort((a, b) => parseInt(a.getAttribute('data-index')) - parseInt(b.getAttribute('data-index')));
+          items.forEach(item => grid.appendChild(item));
+        }
+
+        // Hide categories if no items are visible
+        category.style.display = visibleCount > 0 ? '' : 'none';
       });
     }
 
-    if (searchInput) searchInput.addEventListener('input', filterMenu);
-    if (vegToggle)   vegToggle.addEventListener('change', filterMenu);
+    if (searchInput) searchInput.addEventListener('input', filterAndSortMenu);
+    if (typeFilter)   typeFilter.addEventListener('change', filterAndSortMenu);
+    if (priceSort)    priceSort.addEventListener('change', filterAndSortMenu);
 
     // JumpNav scroll active
-    const sections  = document.querySelectorAll('.menu__category');
     const jumpLinks = document.querySelectorAll('.jumpnav__link');
     const io = new IntersectionObserver(entries => {
       entries.forEach(e => {
@@ -450,8 +510,8 @@
           if (link) link.classList.add('active');
         }
       });
-    }, { threshold: 0.2, rootMargin: '-70px 0px -60px 0px' });
-    sections.forEach(s => io.observe(s));
+    }, { threshold: 0.1, rootMargin: '-80px 0px -60px 0px' });
+    categories.forEach(s => io.observe(s));
 
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
