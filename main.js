@@ -29,10 +29,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ---------------- Shared Navigation Auto-Highlight & Toggle ---------------- */
 function initSharedNav() {
-  const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+  const pathname = window.location.pathname;
+  let currentPath = pathname.split('/').pop() || 'index.html';
+  currentPath = currentPath.replace('.html', ''); // Remove extension
+
   document.querySelectorAll('.site-nav__links a').forEach(link => {
-    const href = link.getAttribute('href');
-    if (href === currentPath || (currentPath === '' && href === 'index.html')) {
+    const href = link.getAttribute('href') || '';
+    const cleanHref = href.replace('.html', '').replace('./', '').replace('/', '');
+    const cleanCurrent = currentPath.replace('index', '');
+
+    if (cleanHref === cleanCurrent || (cleanCurrent === '' && (cleanHref === 'index' || cleanHref === ''))) {
       link.setAttribute('aria-current', 'page');
     }
   });
