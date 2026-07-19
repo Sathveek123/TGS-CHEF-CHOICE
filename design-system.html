@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>7-Color Master UI/UX Design System — TGS ChefChoice</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 36px;
+    }
+    .swatch-card {
+      border: 1px solid var(--gold-dim);
+      padding: 24px;
+      background: var(--ink);
+      text-align: center;
+    }
+    .swatch-color {
+      height: 100px;
+      width: 100%;
+      border: 1px solid var(--gold-dim);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .swatch-name {
+      font-family: var(--font-heading);
+      color: var(--cream-text);
+      font-size: 1.15rem;
+      margin-bottom: 4px;
+    }
+    .swatch-hex {
+      font-family: var(--mono);
+      color: var(--turmeric-gold);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    .swatch-role {
+      font-family: var(--font-accent);
+      font-style: italic;
+      color: var(--muted-clay);
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="scroll-progress"></div>
+
+  <!-- Shared Header Nav -->
+  <header class="site-nav">
+    <div class="site-nav__inner">
+      <a href="index.html" class="site-nav__logo">TGS <span>ChefChoice</span></a>
+      <nav class="site-nav__links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="menu.html">Menu</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="order.html" class="site-nav__cta">Order</a>
+        <a href="offers.html">Offers</a>
+        <a href="catering.html">Events</a>
+        <a href="locations.html">Location</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <button class="site-nav__toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main style="padding: 80px 6vw; background: var(--charcoal);">
+    <!-- Header Banner -->
+    <section style="text-align: center; margin-bottom: 60px;">
+      <p class="about__eyebrow">Design Tokens & Guidelines</p>
+      <h1 class="about__title" style="font-size: 3rem; color: var(--turmeric-gold);">The 7-Color Master UI/UX System</h1>
+      <p class="about__lede">Interactive visual showcase of every color token, component, and font specification used across the 14 pages.</p>
+    </section>
+
+    <!-- 7 Color Swatches Section -->
+    <section class="reveal" style="margin-bottom: 80px;">
+      <div class="offers__tier-header">
+        <span class="principle__num">01</span>
+        <h2>The 7 Canonical Color Swatches</h2>
+        <span class="menu__category-line"></span>
+      </div>
+
+      <div class="swatch-grid">
+        <!-- Swatch 1 -->
+        <div class="swatch-card hover-lift">
+          <div class="swatch-color" style="background: #B3271E; color: #FFF;">#B3271E</div>
+          <h3 class="swatch-name">1. Chili Red</h3>
+          <p class="swatch-hex">--chili-red: #B3271E</p>
+          <p class="swatch-role">Urgency accent — non-veg indicators, validation errors, and rare highlight tags.</p>
+        </div>
+
+        <!-- Swatch 2 -->
+        <div class="swatch-card hover-lift">
+          <div class="swatch-color" style="background: #C9962E; color: #14110F;">#C9962E</div>
+          <h3 class="swatch-name">2. Turmeric Gold</h3>
+          <p class="swatch-hex">--turmeric-gold: #C9962E</p>
+          <p class="swatch-role">Primary workhorse — CTA button fills, plaque borders, prices, stars, active states.</p>
+        </div>
+
+        <!-- Swatch 3 -->
+        <div class="swatch-card hover-lift">
+          <div class="swatch-color" style="background: #E8C878; color: #14110F;">#E8C878</div>
+          <h3 class="swatch-name">3. Turmeric Light</h3>
+          <p class="swatch-hex">--turmeric-light: #E8C878</p>
+          <p class="swatch-role">Hover state — active hover feedback on gold buttons and inner ring animations.</p>
+        </div>
+
+        <!-- Swatch 4 -->
+        <div class="swatch-card hover-lift">
+          <div class="swatch-color" style="background: #1F1B18; color: #F7F1E6; border-color: #C9962E;">#1F1B18</div>
+          <h3 class="swatch-name">4. Charcoal</h3>
+          <p class="swatch-hex">--charcoal: #1F1B18</p>
+          <p class="swatch-role">Primary dark canvas — main background for hero, menu, and gallery grids.</p>
+        </div>
+
+        <!-- Swatch 5 -->
+        <div class="swatch-card hover-lift">
+          <div class="swatch-color" style="background: #14110F; color: #F7F1E6; border-color: #C9962E;">#14110F</div>
+          <h3 class="swatch-name">5. Ink</h3>
+          <p class="swatch-hex">--ink: #14110F</p>
+          <p class="swatch-role">Deep structural layer — nav bar, footer, jumpnav, review cards, form panels.</p>
+        </div>
+
+        <!-- Swatch 6 -->
+        <div class="swatch-card hover-lift">
+          <div class="swatch-color" style="background: #F7F1E6; color: #14110F;">#F7F1E6</div>
+          <h3 class="swatch-name">6. Off-White</h3>
+          <p class="swatch-hex">--off-white: #F7F1E6</p>
+          <p class="swatch-role">Warm parchment breather — used in family loyalty sections for gentle contrast breaks.</p>
+        </div>
+
+        <!-- Swatch 7 -->
+        <div class="swatch-card hover-lift">
+          <div class="swatch-color" style="background: #C9BBA3; color: #14110F;">#C9BBA3</div>
+          <h3 class="swatch-name">7. Muted Clay</h3>
+          <p class="swatch-hex">--muted-clay: #C9BBA3</p>
+          <p class="swatch-role">Secondary text token — body paragraphs, subtext, captions, and form labels.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Component Library Showcase -->
+    <section class="reveal">
+      <div class="offers__tier-header">
+        <span class="principle__num">02</span>
+        <h2>UI Component Library</h2>
+        <span class="menu__category-line"></span>
+      </div>
+
+      <div class="tier-row" style="margin-top: 36px;">
+        <div class="tier-card hover-lift">
+          <h3>Button System</h3>
+          <p class="tier-desc">Primary gold CTA & secondary ghost button</p>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+            <a href="#" class="btn btn--gold" style="text-align:center;">Primary Gold Button</a>
+            <a href="#" class="btn btn--ghost" style="text-align:center;">Secondary Ghost Button</a>
+          </div>
+        </div>
+
+        <div class="tier-card hover-lift">
+          <h3>Menu Item & Indicators</h3>
+          <p class="tier-desc">Dotted leaders + Veg/Non-Veg badges</p>
+          <div style="margin-top: 16px;">
+            <div class="menu__item" style="margin-bottom: 12px;">
+              <span class="menu__item-icon menu__item-icon--veg"></span>
+              <div class="menu__item-text"><h3>Paneer 65</h3></div>
+              <span class="menu__item-dots"></span>
+              <span class="menu__item-price">₹220</span>
+            </div>
+            <div class="menu__item">
+              <span class="menu__item-icon menu__item-icon--nonveg"></span>
+              <div class="menu__item-text"><h3>Chicken 555</h3></div>
+              <span class="menu__item-dots"></span>
+              <span class="menu__item-price">₹260</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tier-card hover-lift">
+          <h3>Ledger Form Field</h3>
+          <p class="tier-desc">Underline input styling with gold focus</p>
+          <div class="form-group" style="margin-top: 16px;">
+            <label>Sample Ledger Input</label>
+            <input type="text" value="Harish Tangudu" readonly style="border-bottom-color: var(--turmeric-gold);">
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer class="site-footer">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <h3>TGS ChefChoice</h3>
+        <p>Family-style food in the heart of Kasibugga — dine-in, takeaway, drive-through & delivery.</p>
+        <div class="site-footer__rating"><span class="stars">★★★★☆</span> 4.1 · 233 Reviews</div>
+      </div>
+      <div class="site-footer__col">
+        <h4>Quick Links</h4>
+        <a href="menu.html">Menu</a>
+        <a href="order.html">Reserve a Table</a>
+        <a href="catering.html">Events & Catering</a>
+        <a href="offers.html">Offers</a>
+      </div>
+      <div class="site-footer__col">
+        <h4>Visit</h4>
+        <p>Kasibugga, Shivaji Nagar,<br>Palasa, Andhra Pradesh 532222</p>
+        <p>097013 25292</p>
+        <p>Open daily · Closes 10 PM</p>
+      </div>
+      <div class="site-footer__col">
+        <h4>Follow</h4>
+        <div class="social-row">
+          <a href="#" class="social-icon">IG</a>
+          <a href="#" class="social-icon">FB</a>
+          <a href="https://wa.me/919701325292" class="social-icon">WA</a>
+        </div>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <p>&copy; <span id="year"></span> TGS ChefChoice. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="privacy-policy.html">Privacy Policy</a> · <a href="terms.html">Terms</a> · <a href="design-system.html">Design System</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

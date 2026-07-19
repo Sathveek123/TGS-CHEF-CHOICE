@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Master Menu — TGS ChefChoice Kasibugga</title>
+  <meta name="description" content="Official menu card of TGS ChefChoice Restaurant Kasibugga. Starters, Chicken 555, Chinese, Biryani, Penne Pasta, Waffles, and Beverages.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="scroll-progress"></div>
+
+  <header class="site-nav">
+    <div class="site-nav__inner">
+      <a href="index.html" class="site-nav__logo">TGS <span>ChefChoice</span></a>
+      <nav class="site-nav__links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="menu.html" aria-current="page">Menu</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="order.html" class="site-nav__cta">Reserve Table</a>
+        <a href="offers.html">Curations</a>
+        <a href="catering.html">Events</a>
+        <a href="locations.html">Location</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <button class="site-nav__toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="menu">
+    <!-- Intro Banner -->
+    <section class="menu__intro">
+      <p class="about__eyebrow">THE MASTER MENU</p>
+      <h1 class="about__title">Every Category, One Uncompromised Standard</h1>
+      <p class="about__lede">Fresh local ingredients, wok-flamed perfection, and unhurried preparation — made to order at our Kasibugga kitchen.</p>
+      <div style="margin-top: 24px; display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+        <button onclick="window.print()" class="btn btn--ghost" style="padding: 10px 20px; font-size: 12px;">🖨️ Print / Save Menu Card</button>
+        <a href="order.html" class="btn btn--gold" style="padding: 10px 20px; font-size: 12px;">Reserve Table with Dish</a>
+      </div>
+    </section>
+
+    <!-- Filter Bar -->
+    <section style="background: #FFFFFF; border-bottom: 1px solid #E2E8F0; padding: 20px 6vw;">
+      <div style="max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 260px; position: relative;">
+          <input type="text" id="menuSearch" placeholder="🔍 Search dishes (e.g. Chicken 555, Biryani, Waffle...)" style="width: 100%; padding: 12px 18px; border-radius: 30px; border: 1.5px solid #CBD5E1; font-size: 0.95rem; outline: none; transition: border-color 0.2s; font-family: var(--font-body);">
+        </div>
+        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; font-weight: 700; color: var(--text-dark); font-size: 0.9rem;">
+          <input type="checkbox" id="vegToggle" style="width: 18px; height: 18px; accent-color: #16A34A; cursor: pointer;">
+          <span>🌿 Veg Only</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Sticky JumpNav -->
+    <nav class="menu__jumpnav">
+      <a href="#starters" class="jumpnav__link active">Starters</a>
+      <a href="#chicken" class="jumpnav__link">Chicken Specials</a>
+      <a href="#pizza-burgers" class="jumpnav__link">Pizza &amp; Burgers</a>
+      <a href="#chinese" class="jumpnav__link">Chinese</a>
+      <a href="#pasta" class="jumpnav__link">Italian Pasta</a>
+      <a href="#rice-biryani" class="jumpnav__link">Rice &amp; Biryani</a>
+      <a href="#waffles-desserts" class="jumpnav__link">Waffles &amp; Desserts</a>
+      <a href="#beverages" class="jumpnav__link">Beverages</a>
+    </nav>
+
+    <!-- 01: Starters -->
+    <section class="menu__category reveal" id="starters">
+      <div class="menu__category-header">
+        <span class="menu__category-num">01</span>
+        <h2>Starters &amp; Appetizers</h2>
+        <span class="menu__category-line"></span>
+      </div>
+      <div class="menu__grid-2col">
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Crispy Corn</h3><span class="menu__item-price">₹180</span></div>
+            <p>Golden corn kernels flash-fried with crushed black pepper, green chilies, and spring onion.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Chilli Potato</h3><span class="menu__item-price">₹170</span></div>
+            <p>Crispy potato batons tossed in a spicy garlic-soy reduction with diced capsicum.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Veg Manchurian Dry</h3><span class="menu__item-price">₹190</span></div>
+            <p>Crispy minced vegetable dumplings tossed in ginger-garlic soy masala.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Paneer 65</h3><span class="menu__item-price">₹220</span></div>
+            <p>Soft cottage cheese cubes marinated in South Indian yogurt-chili spices and fried crisp.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Baby Corn Salt &amp; Pepper</h3><span class="menu__item-price">₹200</span></div>
+            <p>Tender baby corn tossed with crushed tellicherry black pepper and roasted garlic.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Gobi 65</h3><span class="menu__item-price">₹180</span></div>
+            <p>Fresh cauliflower florets batter-coated and crisp fried with curry leaves and mustard seeds.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02: Chicken Specials -->
+    <section class="menu__category reveal" id="chicken">
+      <div class="menu__category-header">
+        <span class="menu__category-num">02</span>
+        <h2>Signature Chicken Specials</h2>
+        <span class="menu__category-line"></span>
+      </div>
+      <div class="menu__grid-2col">
+        <div class="menu__item" data-veg="false">
+          <span class="menu__item-icon menu__item-icon--nonveg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Chicken 555 <span class="menu__item-badge">👑 Kitchen Legend</span></h3><span class="menu__item-price">₹260</span></div>
+            <p>Signature dish — boneless chicken strips marinated in garlic-chili paste, wok-tossed with curry leaves and cashew nuts.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="false">
+          <span class="menu__item-icon menu__item-icon--nonveg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Chicken Chilli Dry</h3><span class="menu__item-price">₹240</span></div>
+            <p>Wok-fried chicken pieces with sliced green chilies, onions, bell peppers, and dark soy glaze.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="false">
+          <span class="menu__item-icon menu__item-icon--nonveg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Chicken 65</h3><span class="menu__item-price">₹250</span></div>
+            <p>Classic Andhra style spiced chicken bites tempered with curry leaves and whole red chilies.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="false">
+          <span class="menu__item-icon menu__item-icon--nonveg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Dragon Chicken</h3><span class="menu__item-price">₹260</span></div>
+            <p>Strips of chicken tossed in a spicy red chili paste with roasted cashew nuts and red peppers.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="false">
+          <span class="menu__item-icon menu__item-icon--nonveg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Garlic Chicken</h3><span class="menu__item-price">₹240</span></div>
+            <p>Tender chicken morsels sauteed in burnt garlic sauce with spring onions.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="false">
+          <span class="menu__item-icon menu__item-icon--nonveg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Pepper Chicken Fry</h3><span class="menu__item-price">₹250</span></div>
+            <p>Rustic dry chicken fry roasted with coarsely ground black pepper and aromatic curry herbs.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03: Pizzas & Burgers -->
+    <section class="menu__category reveal" id="pizza-burgers">
+      <div class="menu__category-header">
+        <span class="menu__category-num">03</span>
+        <h2>Pizzas &amp; Artisan Burgers</h2>
+        <span class="menu__category-line"></span>
+      </div>
+      <div class="menu__grid-2col">
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Paneer Tikka Pizza</h3><span class="menu__item-price">₹280</span></div>
+            <p>Thin crust pizza topped with spiced paneer cubes, red onions, bell peppers, and melted mozzarella.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="false">
+          <span class="menu__item-icon menu__item-icon--nonveg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Chicken Supreme Pizza</h3><span class="menu__item-price">₹320</span></div>
+            <p>Loaded pizza topped with shredded roasted chicken, jalapenos, sweet corn, and mozzarella cheese.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Veg Club Burger</h3><span class="menu__item-price">₹140</span></div>
+            <p>Crispy potato-veggie patty layered with fresh lettuce, tomato, cheese slice, and house sauce.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="false">
+          <span class="menu__item-icon menu__item-icon--nonveg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Crispy Chicken Burger</h3><span class="menu__item-price">₹170</span></div>
+            <p>Golden fried spiced chicken patty with creamy mayonnaise, lettuce, and pickles in a toasted bun.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04: Chinese -->
+    <section class="menu__category reveal" id="chinese">
+      <div class="menu__category-header">
+        <span class="menu__category-num">04</span>
+        <h2>Chinese Noodles &amp; Rice</h2>
+        <span class="menu__category-line"></span>
+      </div>
+      <div class="menu__grid-2col">
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Veg Hakka Noodles</h3><span class="menu__item-price">₹160</span></div>
+            <p>Thin noodles wok-tossed with finely shredded cabbage, carrots, bell peppers, and white pepper.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="false">
+          <span class="menu__item-icon menu__item-icon--nonveg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Chicken Hakka Noodles</h3><span class="menu__item-price">₹190</span></div>
+            <p>Wok-tossed noodles with shredded chicken, egg, and fresh spring vegetables.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Schezwan Fried Rice (Veg)</h3><span class="menu__item-price">₹170</span></div>
+            <p>Long-grain rice wok-tossed in house-made spicy Schezwan chili garlic paste.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="false">
+          <span class="menu__item-icon menu__item-icon--nonveg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Chicken Schezwan Fried Rice</h3><span class="menu__item-price">₹200</span></div>
+            <p>Spicy rice tossed with chicken chunks, egg, and pungent red Schezwan pepper masala.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05: Italian Pasta -->
+    <section class="menu__category reveal" id="pasta">
+      <div class="menu__category-header">
+        <span class="menu__category-num">05</span>
+        <h2>Italian Pasta</h2>
+        <span class="menu__category-line"></span>
+      </div>
+      <div class="menu__grid-2col">
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Mix Sauce Penne Pasta <span class="menu__item-badge">👑 Chef's Choice</span></h3><span class="menu__item-price">₹240</span></div>
+            <p>Signature favorite — rich blend of plum tomato arrabbiata and garlic cream sauce tossed with penne and herbs.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Creamy Alfredo Penne</h3><span class="menu__item-price">₹230</span></div>
+            <p>Penne pasta folded in butter, garlic, heavy parmesan cream sauce, and fresh herbs.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="false">
+          <span class="menu__item-icon menu__item-icon--nonveg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Chicken Penne Alfredo</h3><span class="menu__item-price">₹260</span></div>
+            <p>Grilled chicken strips folded with penne pasta in rich white garlic cream sauce.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06: Biryani -->
+    <section class="menu__category reveal" id="rice-biryani">
+      <div class="menu__category-header">
+        <span class="menu__category-num">06</span>
+        <h2>Biryani &amp; South Indian Rice</h2>
+        <span class="menu__category-line"></span>
+      </div>
+      <div class="menu__grid-2col">
+        <div class="menu__item" data-veg="false">
+          <span class="menu__item-icon menu__item-icon--nonveg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Special Chicken Dum Biryani <span class="menu__item-badge">👑 Dum Special</span></h3><span class="menu__item-price">₹270</span></div>
+            <p>Aromatic long-grain basmati rice slow-cooked with marinated chicken, saffron, mint, and whole spices. Served with Mirchi ka Salan.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="false">
+          <span class="menu__item-icon menu__item-icon--nonveg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Mutton Dum Biryani</h3><span class="menu__item-price">₹340</span></div>
+            <p>Tender mutton pieces dum-cooked with aged basmati rice, fried onions, and pure ghee.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Paneer Dum Biryani</h3><span class="menu__item-price">₹240</span></div>
+            <p>Spiced paneer cubes cooked dum-style with basmati rice, saffron, and fresh coriander.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 07: Waffles & Desserts -->
+    <section class="menu__category reveal" id="waffles-desserts">
+      <div class="menu__category-header">
+        <span class="menu__category-num">07</span>
+        <h2>Waffles &amp; Sizzling Desserts</h2>
+        <span class="menu__category-line"></span>
+      </div>
+      <div class="menu__grid-2col">
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Belgian Chocolate Waffle</h3><span class="menu__item-price">₹180</span></div>
+            <p>Golden grid waffle baked fresh, drenched in warm cocoa ganache and dusted with icing sugar.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Nutella Banana Waffle</h3><span class="menu__item-price">₹210</span></div>
+            <p>Fresh waffle spread thick with Nutella hazelnut cream and topped with fresh banana slices.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Sizzling Brownie with Ice Cream</h3><span class="menu__item-price">₹220</span></div>
+            <p>Fudge chocolate brownie served sizzling on a cast-iron skillet with a scoop of vanilla ice cream.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 08: Beverages -->
+    <section class="menu__category reveal" id="beverages">
+      <div class="menu__category-header">
+        <span class="menu__category-num">08</span>
+        <h2>Craft Beverages</h2>
+        <span class="menu__category-line"></span>
+      </div>
+      <div class="menu__grid-2col">
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Fresh Lime Soda</h3><span class="menu__item-price">₹70</span></div>
+            <p>Freshly squeezed lime juice with your choice of sweet, salted, or mixed soda water.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Cold Coffee with Ice Cream</h3><span class="menu__item-price">₹130</span></div>
+            <p>Chilled dark espresso blended with whole milk and topped with a scoop of vanilla ice cream.</p>
+          </div>
+        </div>
+        <div class="menu__item" data-veg="true">
+          <span class="menu__item-icon menu__item-icon--veg"></span>
+          <div class="menu__item-text">
+            <div class="menu__item-title-row"><h3>Virgin Mojito</h3><span class="menu__item-price">₹110</span></div>
+            <p>Refreshing muddled fresh mint leaves, lime wedges, sugar syrup, and chilled soda.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <h3>TGS ChefChoice</h3>
+        <p>The culinary pride of Palasa &amp; Kasibugga — family dining, takeaway, drive-through &amp; events.</p>
+        <div class="site-footer__rating"><span class="stars">★★★★☆</span> 4.1 · 233 Reviews</div>
+      </div>
+      <div class="site-footer__col">
+        <h4>Quick Links</h4>
+        <a href="menu.html">Master Menu</a>
+        <a href="order.html">Reserve Podium Table</a>
+        <a href="catering.html">Events &amp; Catering</a>
+        <a href="offers.html">Dining Packages</a>
+      </div>
+      <div class="site-footer__col">
+        <h4>Visit Desk</h4>
+        <p>Kasibugga, Shivaji Nagar,<br>Palasa, Andhra Pradesh 532222</p>
+        <p>097013 25292</p>
+        <p>Open daily · 11 AM – 10 PM</p>
+      </div>
+      <div class="site-footer__col">
+        <h4>Social Connect</h4>
+        <div class="social-row">
+          <a href="#" class="social-icon">IG</a>
+          <a href="#" class="social-icon">FB</a>
+          <a href="https://wa.me/919701325292" class="social-icon">WA</a>
+        </div>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <p>&copy; <span id="year"></span> TGS ChefChoice Restaurant. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="privacy-policy.html">Privacy Policy</a> · <a href="terms.html">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script>
+    const searchInput = document.getElementById('menuSearch');
+    const vegToggle   = document.getElementById('vegToggle');
+    const menuItems   = document.querySelectorAll('.menu__item');
+
+    function filterMenu() {
+      const q       = searchInput ? searchInput.value.toLowerCase().trim() : '';
+      const vegOnly = vegToggle ? vegToggle.checked : false;
+      menuItems.forEach(item => {
+        const name = item.querySelector('h3').textContent.toLowerCase();
+        const desc = item.querySelector('p') ? item.querySelector('p').textContent.toLowerCase() : '';
+        const isVeg = item.getAttribute('data-veg') === 'true';
+        const ok = (!q || name.includes(q) || desc.includes(q)) && (!vegOnly || isVeg);
+        item.style.display = ok ? 'grid' : 'none';
+      });
+    }
+
+    if (searchInput) searchInput.addEventListener('input', filterMenu);
+    if (vegToggle)   vegToggle.addEventListener('change', filterMenu);
+
+    // JumpNav scroll active
+    const sections  = document.querySelectorAll('.menu__category');
+    const jumpLinks = document.querySelectorAll('.jumpnav__link');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          jumpLinks.forEach(l => l.classList.remove('active'));
+          const link = document.querySelector(`.jumpnav__link[href="#${e.target.id}"]`);
+          if (link) link.classList.add('active');
+        }
+      });
+    }, { threshold: 0.2, rootMargin: '-70px 0px -60px 0px' });
+    sections.forEach(s => io.observe(s));
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

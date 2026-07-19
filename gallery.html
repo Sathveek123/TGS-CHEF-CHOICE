@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visual Gallery — TGS ChefChoice Kasibugga</title>
+  <meta name="description" content="Visual photography gallery of TGS ChefChoice Restaurant Kasibugga. Signature food photography, kitchen vibe, dining room ambiance, and family celebrations.">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .gallery-page { background: var(--bg-app); }
+    .gallery__item img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+      min-height: 200px;
+      background: #F1F5F9;
+    }
+    .gallery__item:hover img { transform: scale(1.05); }
+  </style>
+</head>
+<body>
+  <div class="scroll-progress"></div>
+
+  <header class="site-nav">
+    <div class="site-nav__inner">
+      <a href="index.html" class="site-nav__logo">TGS <span>ChefChoice</span></a>
+      <nav class="site-nav__links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="menu.html">Menu</a>
+        <a href="gallery.html" aria-current="page">Gallery</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="order.html" class="site-nav__cta">Reserve Table</a>
+        <a href="offers.html">Curations</a>
+        <a href="catering.html">Events</a>
+        <a href="locations.html">Location</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <button class="site-nav__toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="gallery-page">
+    <!-- Intro Banner -->
+    <section class="gallery__intro">
+      <p class="about__eyebrow">Visual Gallery</p>
+      <h1 class="about__title">The Plates, The Vibe, The Ambiance</h1>
+      <p class="about__lede">A curated collection of photographs capturing Kasibugga's favourite dining room and signature kitchen plates.</p>
+    </section>
+
+    <!-- Filter Tabs -->
+    <div class="gallery__filters">
+      <button class="filter-btn active" data-filter="all">All Photographs</button>
+      <button class="filter-btn" data-filter="food">Signature Plates</button>
+      <button class="filter-btn" data-filter="interior">Dining Room Ambiance</button>
+    </div>
+
+    <!-- Masonry Grid — real Unsplash food images -->
+    <section class="gallery__grid" id="galleryGrid">
+
+      <figure class="gallery__item hover-lift" data-category="food">
+        <img
+          src="https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=600&q=80"
+          alt="Crispy golden chicken starter dish with curry leaves"
+          loading="lazy">
+        <figcaption>Chicken 555 — Wok-tossed boneless chicken with garlic chili, curry leaves, and cashews</figcaption>
+      </figure>
+
+      <figure class="gallery__item hover-lift" data-category="food">
+        <img
+          src="https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=600&q=80"
+          alt="Indian paneer tikka grilled with spices"
+          loading="lazy">
+        <figcaption>Paneer 65 — Crispy cottage cheese marinated in South Indian yogurt-chili spices</figcaption>
+      </figure>
+
+      <figure class="gallery__item hover-lift" data-category="food">
+        <img
+          src="https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=600&q=80"
+          alt="Creamy penne pasta with rich tomato garlic sauce"
+          loading="lazy">
+        <figcaption>Mix Sauce Penne Pasta — Plum tomato arrabbiata blended with garlic cream sauce</figcaption>
+      </figure>
+
+      <figure class="gallery__item hover-lift" data-category="food">
+        <img
+          src="https://images.unsplash.com/photo-1562376552-0d160a2f238d?w=600&q=80"
+          alt="Golden Belgian chocolate waffle with cocoa sauce"
+          loading="lazy">
+        <figcaption>Belgian Chocolate Waffle — Baked fresh, drenched in warm cocoa ganache</figcaption>
+      </figure>
+
+      <figure class="gallery__item hover-lift" data-category="food">
+        <img
+          src="https://images.unsplash.com/photo-1563379091339-03246963d96b?w=600&q=80"
+          alt="Aromatic chicken biryani with saffron and fried onions"
+          loading="lazy">
+        <figcaption>Special Chicken Dum Biryani — Saffron basmati slow-cooked with whole spices</figcaption>
+      </figure>
+
+      <figure class="gallery__item hover-lift" data-category="interior">
+        <img
+          src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80"
+          alt="Warm cozy restaurant interior with pendant lights"
+          loading="lazy">
+        <figcaption>Kasibugga Main Dining Room — Warm golden pendant lighting and family booth seating</figcaption>
+      </figure>
+
+      <figure class="gallery__item hover-lift" data-category="food">
+        <img
+          src="https://images.unsplash.com/photo-1625398407796-82650a8c135f?w=600&q=80"
+          alt="Crispy corn starter with black pepper and spring onion"
+          loading="lazy">
+        <figcaption>Crispy Corn — Flash-fried golden corn kernels tossed with black pepper</figcaption>
+      </figure>
+
+      <figure class="gallery__item hover-lift" data-category="food">
+        <img
+          src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600&q=80"
+          alt="Sizzling chocolate brownie with vanilla ice cream"
+          loading="lazy">
+        <figcaption>Sizzling Brownie — Cast-iron skillet fudge brownie with vanilla ice cream</figcaption>
+      </figure>
+
+      <figure class="gallery__item hover-lift" data-category="interior">
+        <img
+          src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80"
+          alt="Fine dining table setup with warm lighting for celebration"
+          loading="lazy">
+        <figcaption>Celebration Setup — Birthday and anniversary table arrangements at TGS ChefChoice</figcaption>
+      </figure>
+
+    </section>
+  </main>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+    <button class="lightbox__close" id="lightboxClose" aria-label="Close">×</button>
+    <button class="lightbox__prev" id="lightboxPrev" aria-label="Previous">‹</button>
+    <button class="lightbox__next" id="lightboxNext" aria-label="Next">›</button>
+    <div class="lightbox__stage">
+      <img id="lightboxImg" src="" alt="">
+      <div class="lightbox__caption" id="lightboxCaption"></div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <h3>TGS ChefChoice</h3>
+        <p>The culinary pride of Palasa &amp; Kasibugga — family dining, takeaway, drive-through &amp; events.</p>
+        <div class="site-footer__rating"><span class="stars">★★★★☆</span> 4.1 · 233 Reviews</div>
+      </div>
+      <div class="site-footer__col">
+        <h4>Quick Links</h4>
+        <a href="menu.html">Master Menu</a>
+        <a href="order.html">Reserve Podium Table</a>
+        <a href="catering.html">Events &amp; Catering</a>
+        <a href="offers.html">Dining Packages</a>
+      </div>
+      <div class="site-footer__col">
+        <h4>Visit Desk</h4>
+        <p>Kasibugga, Shivaji Nagar,<br>Palasa, Andhra Pradesh 532222</p>
+        <p>097013 25292</p>
+        <p>Open daily · 11 AM – 10 PM</p>
+      </div>
+      <div class="site-footer__col">
+        <h4>Social Connect</h4>
+        <div class="social-row">
+          <a href="#" class="social-icon">IG</a>
+          <a href="#" class="social-icon">FB</a>
+          <a href="https://wa.me/919701325292" class="social-icon">WA</a>
+        </div>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <p>&copy; <span id="year"></span> TGS ChefChoice Restaurant. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="privacy-policy.html">Privacy Policy</a> · <a href="terms.html">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Filter
+    const filterBtns  = document.querySelectorAll('.filter-btn');
+    const galleryItems = document.querySelectorAll('.gallery__item');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.getAttribute('data-filter');
+        galleryItems.forEach(item => {
+          const match = filter === 'all' || item.getAttribute('data-category') === filter;
+          item.style.display = match ? '' : 'none';
+        });
+      });
+    });
+
+    // Lightbox
+    const lightbox       = document.getElementById('lightbox');
+    const lightboxImg    = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+    const lightboxClose  = document.getElementById('lightboxClose');
+    const lightboxPrev   = document.getElementById('lightboxPrev');
+    const lightboxNext   = document.getElementById('lightboxNext');
+    let currentIndex = 0;
+
+    const visibleItems = () => [...galleryItems].filter(i => i.style.display !== 'none');
+
+    function openLightbox(idx) {
+      const items = visibleItems();
+      if (!items[idx]) return;
+      currentIndex = idx;
+      const img = items[idx].querySelector('img');
+      const cap = items[idx].querySelector('figcaption');
+      lightboxImg.src = img.src.replace('w=600', 'w=1200');
+      lightboxImg.alt = img.alt;
+      lightboxCaption.textContent = cap ? cap.textContent : '';
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    galleryItems.forEach((item, i) => {
+      item.addEventListener('click', () => {
+        const items = visibleItems();
+        openLightbox(items.indexOf(item));
+      });
+    });
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+
+    lightboxPrev.addEventListener('click', e => {
+      e.stopPropagation();
+      const items = visibleItems();
+      currentIndex = (currentIndex - 1 + items.length) % items.length;
+      openLightbox(currentIndex);
+    });
+
+    lightboxNext.addEventListener('click', e => {
+      e.stopPropagation();
+      const items = visibleItems();
+      currentIndex = (currentIndex + 1) % items.length;
+      openLightbox(currentIndex);
+    });
+
+    document.addEventListener('keydown', e => {
+      if (!lightbox.classList.contains('open')) return;
+      if (e.key === 'Escape')      closeLightbox();
+      if (e.key === 'ArrowLeft')   lightboxPrev.click();
+      if (e.key === 'ArrowRight')  lightboxNext.click();
+    });
+  </script>
+</body>
+</html>

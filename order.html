@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reserve Table — TGS ChefChoice Kasibugga</title>
+  <meta name="description" content="Reserve your table or order takeaway at TGS ChefChoice Kasibugga. Instant booking form, dine-in and counter phone line.">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Order page specific */
+    .order-hero-strip {
+      background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+      border-bottom: 1px solid var(--saffron-border);
+      padding: 80px 6vw 50px;
+      text-align: center;
+    }
+
+    .order-main-wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 60px 6vw;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .order-main-wrap { grid-template-columns: 1fr; }
+    }
+
+    /* Left: Form card */
+    .order-form-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .order-form-card h2 {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      color: var(--text-dark);
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--saffron-border);
+    }
+
+    /* Service toggle pills */
+    .service-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .service-pill {
+      display: block;
+      cursor: pointer;
+    }
+
+    .service-pill input[type="radio"] { display: none; }
+
+    .service-pill__label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 16px 12px;
+      border: 2px solid #E2E8F0;
+      border-radius: 12px;
+      background: #FAFAFA;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .service-pill__label .icon { font-size: 1.8rem; }
+    .service-pill__label .label-text {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .service-pill input[type="radio"]:checked + .service-pill__label {
+      border-color: var(--saffron-gold);
+      background: #FFFBEB;
+      color: var(--saffron-gold);
+    }
+
+    .service-pill input[type="radio"]:checked + .service-pill__label .label-text {
+      color: var(--saffron-gold);
+    }
+
+    /* Section divider inside form */
+    .form-section-title {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--saffron-gold);
+      margin: 24px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .form-section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--saffron-border);
+    }
+
+    /* Submit btn */
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--saffron-gold);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 12px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 14px rgba(217,119,6,0.3);
+    }
+
+    .submit-btn:hover {
+      background: #B45309;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(217,119,6,0.4);
+    }
+
+    .submit-btn:active { transform: translateY(0); }
+
+    /* Right: Info card */
+    .order-info-card {
+      background: linear-gradient(180deg, #FFFBEB 0%, #FFFFFF 100%);
+      border: 1.5px solid var(--saffron-border);
+      border-radius: 20px;
+      padding: 36px 30px;
+      box-shadow: var(--shadow-lg);
+      position: sticky;
+      top: 90px;
+    }
+
+    .order-info-card .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FEF3C7;
+      color: var(--saffron-gold);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    .order-info-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.4rem;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .order-info-card p {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--text-body);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .info-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .info-btn--gold {
+      background: var(--saffron-gold);
+      color: #FFFFFF;
+      box-shadow: 0 4px 14px rgba(217,119,6,0.28);
+    }
+    .info-btn--gold:hover {
+      background: #B45309;
+      transform: translateY(-2px);
+    }
+
+    .info-btn--wa {
+      background: #FFFFFF;
+      color: #16A34A;
+      border: 1.5px solid #86EFAC;
+    }
+    .info-btn--wa:hover {
+      background: #F0FDF4;
+      border-color: #16A34A;
+      transform: translateY(-2px);
+    }
+
+    .hours-table {
+      margin-top: 20px;
+      border-top: 1px solid var(--saffron-border);
+      padding-top: 18px;
+    }
+
+    .hours-table h4 {
+      font-family: var(--font-heading);
+      color: var(--saffron-gold);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      padding: 6px 0;
+      border-bottom: 1px dashed #F1F5F9;
+      color: var(--text-body);
+    }
+
+    .hours-row:last-child { border-bottom: none; }
+
+    .hours-row span:last-child {
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    /* Success banner */
+    .success-banner {
+      display: none;
+      background: linear-gradient(135deg, #F0FDF4, #DCFCE7);
+      border: 1.5px solid #86EFAC;
+      border-radius: 14px;
+      padding: 24px 28px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .success-banner.show { display: block; }
+    .success-banner .icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .success-banner h3 {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      color: #16A34A;
+      margin-bottom: 6px;
+    }
+    .success-banner p {
+      font-size: 13px;
+      color: #166534;
+    }
+  </style>
+</head>
+<body>
+  <div class="scroll-progress"></div>
+
+  <header class="site-nav">
+    <div class="site-nav__inner">
+      <a href="index.html" class="site-nav__logo">TGS <span>ChefChoice</span></a>
+      <nav class="site-nav__links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="menu.html">Menu</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="order.html" aria-current="page" class="site-nav__cta">Reserve Table</a>
+        <a href="offers.html">Curations</a>
+        <a href="catering.html">Events</a>
+        <a href="locations.html">Location</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <button class="site-nav__toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Strip -->
+    <div class="order-hero-strip">
+      <p class="about__eyebrow">Table Reservations</p>
+      <h1 class="about__title">Booked in 60 Seconds,<br>Remembered for Years</h1>
+      <p class="about__lede">Dine-in table hold or takeaway counter — tell us when, we'll be ready with your seat and your dish.</p>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="order-main-wrap">
+
+      <!-- LEFT: Booking Form -->
+      <div class="order-form-card reveal">
+        <h2>🍽️ Table &amp; Takeaway Reservation</h2>
+
+        <!-- Service Toggle -->
+        <div class="service-toggle" role="group" aria-label="Service type">
+          <label class="service-pill">
+            <input type="radio" name="service" value="dinein" id="svc-dinein" checked>
+            <span class="service-pill__label">
+              <span class="icon">🪑</span>
+              <span class="label-text">Dine-In Table</span>
+            </span>
+          </label>
+          <label class="service-pill">
+            <input type="radio" name="service" value="takeaway" id="svc-takeaway">
+            <span class="service-pill__label">
+              <span class="icon">🥡</span>
+              <span class="label-text">Takeaway Counter</span>
+            </span>
+          </label>
+        </div>
+
+        <form id="reserveForm" novalidate>
+          <!-- Guest Info -->
+          <p class="form-section-title">Guest Information</p>
+
+          <div class="form-group">
+            <label for="ord-name">Full Name <span class="req">*</span></label>
+            <input type="text" id="ord-name" name="name" placeholder="e.g. Harish Tangudu" autocomplete="name" required minlength="2">
+            <span class="form-error" id="err-name"></span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="ord-phone">Phone Number <span class="req">*</span></label>
+              <input type="tel" id="ord-phone" name="phone" placeholder="10-digit mobile" pattern="[6-9][0-9]{9}" required>
+              <span class="form-error" id="err-phone"></span>
+            </div>
+            <div class="form-group">
+              <label for="ord-email">Email Address <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+              <input type="email" id="ord-email" name="email" placeholder="your@email.com" autocomplete="email">
+            </div>
+          </div>
+
+          <!-- Booking Details -->
+          <p class="form-section-title">Booking Details</p>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="ord-date">Date <span class="req">*</span></label>
+              <input type="date" id="ord-date" name="date" required>
+              <span class="form-error" id="err-date"></span>
+            </div>
+            <div class="form-group">
+              <label for="ord-time">Preferred Time <span class="req">*</span></label>
+              <input type="time" id="ord-time" name="time" min="11:00" max="22:00" required>
+              <span class="form-error" id="err-time"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="ord-guests">Party Size <span class="req">*</span></label>
+            <select id="ord-guests" name="guests" required>
+              <option value="">Select number of guests</option>
+              <option value="1">Just Me (1 Guest)</option>
+              <option value="2">2 Guests — Couple / Duo</option>
+              <option value="3-4">3–4 Guests — Family Table</option>
+              <option value="5-6">5–6 Guests — Group</option>
+              <option value="7-8">7–8 Guests — Group Party</option>
+              <option value="9+">9+ Guests — Large Event</option>
+            </select>
+            <span class="form-error" id="err-guests"></span>
+          </div>
+
+          <!-- Special Requests -->
+          <p class="form-section-title">Special Requests</p>
+
+          <div class="form-group">
+            <label for="ord-occasion">Occasion</label>
+            <select id="ord-occasion" name="occasion">
+              <option value="">Select if applicable</option>
+              <option value="birthday">🎂 Birthday Celebration</option>
+              <option value="anniversary">💍 Anniversary</option>
+              <option value="family">👨‍👩‍👧 Family Gathering</option>
+              <option value="business">💼 Business Dinner</option>
+              <option value="date">❤️ Date Night</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="ord-notes">Additional Notes</label>
+            <textarea id="ord-notes" name="notes" rows="3" placeholder="High chair needed, birthday surprise, quiet corner, allergy info..."></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">
+            ✓ Confirm Reservation
+          </button>
+        </form>
+
+        <!-- Success Banner -->
+        <div class="success-banner" id="successBanner">
+          <div class="icon">🎉</div>
+          <h3>Reservation Received!</h3>
+          <p>We'll confirm your table via phone call within 10 minutes. Looking forward to serving you!</p>
+        </div>
+      </div>
+
+      <!-- RIGHT: Info Card -->
+      <aside class="order-info-card reveal">
+        <span class="badge">● Live Desk · Instant Confirmation</span>
+        <h3>Front Counter Desk</h3>
+        <p>Speak directly to our Kasibugga counter team for immediate table hold or urgent takeaway orders.</p>
+
+        <a href="tel:+919701325292" class="info-btn info-btn--gold">
+          📞 Call Now · 097013 25292
+        </a>
+        <a href="https://wa.me/919701325292?text=Hi%20TGS%20ChefChoice!%20I%20want%20to%20reserve%20a%20table." target="_blank" rel="noopener" class="info-btn info-btn--wa">
+          💬 WhatsApp Us Directly
+        </a>
+
+        <div class="hours-table">
+          <h4>Opening Hours</h4>
+          <div class="hours-row"><span>Monday – Friday</span><span>11:00 AM – 10:00 PM</span></div>
+          <div class="hours-row"><span>Saturday</span><span>11:00 AM – 10:30 PM</span></div>
+          <div class="hours-row"><span>Sunday</span><span>11:00 AM – 10:30 PM</span></div>
+        </div>
+
+        <div style="margin-top: 20px; padding: 16px; background: #F8FAFC; border-radius: 12px; border: 1px solid #E2E8F0;">
+          <p style="font-family: var(--font-body); font-size: 13px; color: var(--text-muted); line-height: 1.6; margin: 0;">
+            📍 <strong style="color:var(--text-dark);">Shivaji Nagar, Kasibugga,</strong><br>Palasa, Andhra Pradesh — 532222
+          </p>
+        </div>
+
+        <a href="menu.html" style="display: block; text-align: center; margin-top: 16px; font-size: 13px; font-weight: 700; color: var(--saffron-gold); text-decoration: none;">
+          📖 Browse Full Menu →
+        </a>
+      </aside>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <h3>TGS ChefChoice</h3>
+        <p>Family-style food in the heart of Kasibugga — dine-in, takeaway, drive-through &amp; events.</p>
+        <div class="site-footer__rating"><span class="stars">★★★★☆</span> 4.1 · 233 Reviews</div>
+      </div>
+      <div class="site-footer__col">
+        <h4>Quick Links</h4>
+        <a href="menu.html">Master Menu</a>
+        <a href="order.html">Reserve a Table</a>
+        <a href="catering.html">Events &amp; Catering</a>
+        <a href="offers.html">Dining Packages</a>
+      </div>
+      <div class="site-footer__col">
+        <h4>Visit Us</h4>
+        <p>Kasibugga, Shivaji Nagar,<br>Palasa, Andhra Pradesh 532222</p>
+        <p>097013 25292</p>
+        <p>Open daily · 11 AM – 10 PM</p>
+      </div>
+      <div class="site-footer__col">
+        <h4>Social Connect</h4>
+        <div class="social-row">
+          <a href="#" class="social-icon">IG</a>
+          <a href="#" class="social-icon">FB</a>
+          <a href="https://wa.me/919701325292" class="social-icon">WA</a>
+        </div>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <p>&copy; <span id="year"></span> TGS ChefChoice Restaurant. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="privacy-policy.html">Privacy Policy</a> · <a href="terms.html">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Set minimum date to today
+    const dateInput = document.getElementById('ord-date');
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm   = String(today.getMonth() + 1).padStart(2,'0');
+    const dd   = String(today.getDate()).padStart(2,'0');
+    dateInput.min = `${yyyy}-${mm}-${dd}`;
+
+    // Form validation + submit
+    const form        = document.getElementById('reserveForm');
+    const submitBtn   = document.getElementById('submitBtn');
+    const successBanner = document.getElementById('successBanner');
+
+    function showError(id, msg) {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = msg; el.classList.add('show'); }
+    }
+    function clearError(id) {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = ''; el.classList.remove('show'); }
+    }
+
+    function validateForm() {
+      let valid = true;
+
+      const name  = document.getElementById('ord-name').value.trim();
+      const phone = document.getElementById('ord-phone').value.trim();
+      const date  = document.getElementById('ord-date').value;
+      const time  = document.getElementById('ord-time').value;
+      const guests = document.getElementById('ord-guests').value;
+
+      clearError('err-name');
+      clearError('err-phone');
+      clearError('err-date');
+      clearError('err-time');
+      clearError('err-guests');
+
+      if (!name || name.length < 2) {
+        showError('err-name', 'Please enter your full name (minimum 2 characters).');
+        valid = false;
+      }
+
+      if (!phone || !/^[6-9][0-9]{9}$/.test(phone)) {
+        showError('err-phone', 'Please enter a valid 10-digit Indian mobile number.');
+        valid = false;
+      }
+
+      if (!date) {
+        showError('err-date', 'Please select a reservation date.');
+        valid = false;
+      }
+
+      if (!time) {
+        showError('err-time', 'Please select a preferred time (11 AM – 10 PM).');
+        valid = false;
+      } else {
+        const [h, m] = time.split(':').map(Number);
+        const totalMins = h * 60 + m;
+        if (totalMins < 660 || totalMins > 1320) {
+          showError('err-time', 'We are open 11:00 AM – 10:00 PM only.');
+          valid = false;
+        }
+      }
+
+      if (!guests) {
+        showError('err-guests', 'Please select your party size.');
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      if (!validateForm()) return;
+
+      // Simulate submission
+      submitBtn.textContent = '⏳ Confirming...';
+      submitBtn.disabled = true;
+
+      setTimeout(() => {
+        form.style.display = 'none';
+        successBanner.classList.add('show');
+        successBanner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 1200);
+    });
+
+    // Real-time validation on blur
+    document.getElementById('ord-name').addEventListener('blur', function() {
+      if (this.value.trim().length >= 2) clearError('err-name');
+    });
+    document.getElementById('ord-phone').addEventListener('blur', function() {
+      if (/^[6-9][0-9]{9}$/.test(this.value.trim())) clearError('err-phone');
+    });
+    document.getElementById('ord-date').addEventListener('change', function() {
+      if (this.value) clearError('err-date');
+    });
+  </script>
+</body>
+</html>

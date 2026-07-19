@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us — TGS ChefChoice Kasibugga</title>
+  <meta name="description" content="Get in touch with TGS ChefChoice Kasibugga. Phone 097013 25292, online message form, social channels, and direct inquiry response.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="scroll-progress"></div>
+
+  <!-- Shared Header Nav -->
+  <header class="site-nav">
+    <div class="site-nav__inner">
+      <a href="index.html" class="site-nav__logo">TGS <span>ChefChoice</span></a>
+      <nav class="site-nav__links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="menu.html">Menu</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="order.html" class="site-nav__cta">Order</a>
+        <a href="offers.html">Offers</a>
+        <a href="catering.html">Events</a>
+        <a href="locations.html">Location</a>
+        <a href="contact.html" aria-current="page">Contact</a>
+      </nav>
+      <button class="site-nav__toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main class="contact-page">
+    <!-- Intro Banner -->
+    <section class="contact__intro">
+      <p class="about__eyebrow">Get in Touch</p>
+      <h1 class="about__title">We're Always at the Counter</h1>
+      <p class="about__lede">Questions about catering, feedback on a meal, or booking a table — reach out directly.</p>
+    </section>
+
+    <!-- Main Contact Form + Info Grid -->
+    <section class="order-grid-hero reveal">
+      <div>
+        <div class="order-form__header" style="margin-bottom: 24px;">
+          <span class="order-form__num">01</span>
+          <h2>Send a Direct Message</h2>
+          <span class="order-form__line"></span>
+        </div>
+        <form class="order-form" id="contactForm" action="thank-you.html" method="GET" novalidate>
+          <div class="form-group">
+            <label for="cnt-name">Full Name <span class="req">*</span></label>
+            <input type="text" id="cnt-name" name="name" required minlength="2" placeholder="e.g. Dinesh T">
+            <span class="form-error"></span>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cnt-phone">Phone Number <span class="req">*</span></label>
+              <input type="tel" id="cnt-phone" name="phone" pattern="[0-9]{10}" placeholder="10-digit mobile number" required>
+              <span class="form-error"></span>
+            </div>
+            <div class="form-group">
+              <label for="cnt-email">Email Address <span style="font-weight: normal; color: var(--text-muted);">(optional)</span></label>
+              <input type="email" id="cnt-email" name="email" placeholder="name@example.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cnt-topic">Message Topic <span class="req">*</span></label>
+            <select id="cnt-topic" name="topic" required>
+              <option value="">Select topic</option>
+              <option value="general">General Enquiry</option>
+              <option value="feedback">Feedback on a Meal</option>
+              <option value="catering">Catering Inquiry</option>
+              <option value="other">Other</option>
+            </select>
+            <span class="form-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="cnt-message">Your Message <span class="req">*</span></label>
+            <textarea id="cnt-message" name="message" rows="5" required minlength="10" placeholder="How can we help?"></textarea>
+            <span class="form-error"></span>
+          </div>
+          <button type="submit" class="btn btn--gold btn--full">Send Message</button>
+          <p class="form-success">Thank you — we have received your message.</p>
+        </form>
+      </div>
+
+      <!-- Right Column: Direct Desk Card -->
+      <aside class="podium-card">
+        <span class="podium-badge">● Counter Line Active</span>
+        <h2 style="font-family: var(--font-heading); font-size: 1.5rem; color: var(--text-dark); margin-bottom: 12px;">Direct Contact</h2>
+        <p style="font-family: var(--font-accent); font-style: italic; font-size: 1.15rem; color: var(--text-body); margin-bottom: 24px; line-height: 1.5;">Call daily between 11 AM and 10 PM for fast response from our Kasibugga team.</p>
+        
+        <a href="tel:+919701325292" class="btn btn--gold btn--full" style="text-align: center; margin-bottom: 16px;">Call · 097013 25292</a>
+        <a href="https://wa.me/919701325292" target="_blank" rel="noopener" class="btn btn--ghost btn--full" style="text-align: center; margin-bottom: 24px;">Message on WhatsApp</a>
+
+        <div style="border-top: 1px solid var(--saffron-border); padding-top: 20px;">
+          <h4 style="font-family: var(--font-heading); color: var(--saffron-gold); font-size: 0.95rem; margin-bottom: 8px;">Address</h4>
+          <p style="font-size: 0.9rem; color: var(--text-body);">Kasibugga, Shivaji Nagar,<br>Palasa, Andhra Pradesh 532222</p>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Social Channels -->
+    <section class="reveal" style="padding: 60px 6vw; background: #FFFFFF; text-align: center; border-top: 1px solid #E2E8F0;">
+      <h2 style="font-family: var(--font-heading); font-size: 1.8rem; color: var(--text-dark); margin-bottom: 8px;">Follow Our Kitchen</h2>
+      <p style="font-family: var(--font-accent); font-style: italic; font-size: 1.1rem; color: var(--text-muted); margin-bottom: 24px;">Behind-the-scenes dishes, weekend specials, and Kasibugga updates.</p>
+      <div style="display: flex; justify-content: center; gap: 16px;">
+        <a href="#" style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid #CBD5E1; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--saffron-gold);">IG</a>
+        <a href="#" style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid #CBD5E1; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--saffron-gold);">FB</a>
+        <a href="https://wa.me/919701325292" style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid #CBD5E1; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--saffron-gold);">WA</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared Footer -->
+  <footer class="site-footer">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <h3>TGS ChefChoice</h3>
+        <p>Family-style food in the heart of Kasibugga — dine-in, takeaway, drive-through & delivery.</p>
+        <div class="site-footer__rating"><span class="stars">★★★★☆</span> 4.1 · 233 Reviews</div>
+      </div>
+      <div class="site-footer__col">
+        <h4>Quick Links</h4>
+        <a href="menu.html">Menu</a>
+        <a href="order.html">Reserve a Table</a>
+        <a href="catering.html">Events & Catering</a>
+        <a href="offers.html">Offers</a>
+      </div>
+      <div class="site-footer__col">
+        <h4>Visit</h4>
+        <p>Kasibugga, Shivaji Nagar,<br>Palasa, Andhra Pradesh 532222</p>
+        <p>097013 25292</p>
+        <p>Open daily · Closes 10 PM</p>
+      </div>
+      <div class="site-footer__col">
+        <h4>Follow</h4>
+        <div class="social-row">
+          <a href="#" class="social-icon">IG</a>
+          <a href="#" class="social-icon">FB</a>
+          <a href="https://wa.me/919701325292" class="social-icon">WA</a>
+        </div>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <p>&copy; <span id="year"></span> TGS ChefChoice. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="privacy-policy.html">Privacy Policy</a> · <a href="terms.html">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
