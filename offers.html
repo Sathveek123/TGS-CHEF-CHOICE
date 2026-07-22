@@ -122,41 +122,72 @@
   </main>
 
   <!-- Shared Footer -->
+    <!-- Shared Master Footer -->
   <footer class="site-footer">
     <div class="site-footer__grid">
+      <!-- Col 1: Brand & Owners -->
       <div class="site-footer__brand">
-        <img src="assets/tgs-circular.png" alt="TGS ChefChoice Logo" style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; margin-bottom: 15px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15)); display: block;">
-        <h3>TGS ChefChoice</h3>
-        <p>The culinary pride of Palasa &amp; Kasibugga — family dining, takeaway, drive-through &amp; events.</p>
-        <p style="font-family: var(--font-accent); font-style: italic; font-size: 0.88rem; color: var(--muted-clay); margin-top: 6px; line-height: 1.4;">A family kitchen run by Tarakeswari &amp; Balakrishna Gujju</p>
-        <div class="site-footer__rating" style="margin-top: 10px;"><span class="stars">★★★★☆</span> 4.1 · 233 Reviews</div>
+        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+          <img src="assets/tgs-circular.png" alt="TGS ChefChoice Logo" style="width: 72px; height: 72px; object-fit: cover; border-radius: 50%; border: 2px solid var(--saffron-border); filter: drop-shadow(0 4px 12px rgba(0,0,0,0.18)); display: block;">
+          <div>
+            <h3 style="font-family: var(--font-heading); font-size: 1.35rem; margin: 0; color: #FFFFFF;">TGS ChefChoice</h3>
+            <span style="font-family: var(--font-accent); font-style: italic; font-size: 0.85rem; color: #E8C878;">Kasibugga · Est. 2017</span>
+          </div>
+        </div>
+        <p style="font-size: 0.9rem; color: #94A3B8; line-height: 1.5; margin-bottom: 12px;">The culinary pride of Palasa &amp; Kasibugga — family dining, wok-flamed starters, dum biryani, takeaway &amp; catering events.</p>
+        <p style="font-family: var(--font-accent); font-style: italic; font-size: 0.88rem; color: #E2E8F0; margin: 0 0 14px 0; line-height: 1.4;">❤️ A family kitchen run by <strong>Tarakeswari &amp; Balakrishna Gujju</strong></p>
+        <div class="site-footer__rating" style="display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; color: #F1F5F9;">
+          <span style="color: #F59E0B; font-weight: 800;">★★★★☆ 4.1</span>
+          <span style="color: #94A3B8;">· 233 Google Reviews</span>
+        </div>
       </div>
+
+      <!-- Col 2: Navigation Links -->
       <div class="site-footer__col">
-        <h4>Quick Links</h4>
-        <a href="menu">Master Menu</a>
-        <a href="order">Reserve Table</a>
-        <a href="catering">Events &amp; Catering</a>
-        <a href="offers">Dining Packages</a>
+        <h4>Navigation Links</h4>
+        <a href="./">Home Overview</a>
+        <a href="menu">21-Section Master Menu</a>
+        <a href="order">Reserve a Table</a>
+        <a href="offers">Dining Packages &amp; Curations</a>
+        <a href="catering">Events &amp; Functions</a>
+        <a href="gallery">Visual Photo Gallery</a>
+        <a href="reviews">Google Customer Reviews</a>
+        <a href="locations">Location &amp; Driving Directions</a>
+        <a href="faq">Frequently Asked Questions</a>
       </div>
+
+      <!-- Col 3: Counter Desk & Hours -->
       <div class="site-footer__col">
-        <h4>Visit Desk</h4>
-        <p>Kasibugga, Shivaji Nagar,<br>Palasa, Andhra Pradesh 532222</p>
-        <p>097013 25292</p>
-        <p>Open daily · 11:30 AM – 10:30 PM</p>
+        <h4>Counter Desk &amp; Hours</h4>
+        <p style="margin-bottom: 8px;"><strong>📍 Location:</strong><br>Shivaji Nagar, Kasibugga,<br>Palasa, Srikakulam, AP 532222</p>
+        <p style="margin-bottom: 8px;"><strong>📞 Front Counter Call:</strong><br><a href="tel:+919701325292" style="color: var(--saffron-bright); text-decoration: none; font-weight: 700;">097013 25292</a></p>
+        <p style="margin-bottom: 8px;"><strong>⏰ Operating Hours:</strong><br>Open Daily · 11:30 AM – 10:30 PM</p>
+        <a href="https://maps.google.com/?q=TGS+Chef+Choice+Kasibugga" target="_blank" rel="noopener" style="display: inline-block; margin-top: 6px; font-size: 0.82rem; font-weight: 700; color: var(--saffron-bright); text-decoration: none;">🗺️ Open in Google Maps →</a>
       </div>
+
+      <!-- Col 4: WhatsApp Direct & Social -->
       <div class="site-footer__col">
-        <h4>Social Connect</h4>
-        <div class="social-row">
-          <a href="#" class="social-icon">IG</a>
-          <a href="#" class="social-icon">FB</a>
-          <a href="https://wa.me/919701325292" class="social-icon">WA</a>
+        <h4>Instant WhatsApp Order</h4>
+        <p style="font-size: 0.85rem; color: #94A3B8; margin-bottom: 14px;">No app download needed. Select your dishes on our site and send direct to counter desk.</p>
+        <a href="https://wa.me/919701325292?text=Hi%20TGS%20ChefChoice!%20I%20want%20to%20place%20an%20order." target="_blank" rel="noopener" class="btn btn--gold" style="display: block; text-align: center; padding: 10px 16px; font-size: 0.85rem; font-weight: 700; border-radius: 8px; margin-bottom: 16px; background: #25D366; color: #FFFFFF; border: none;">
+          💬 Chat &amp; Order on WhatsApp
+        </a>
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; margin-top: 12px;">
+          <span style="display: block; font-size: 0.78rem; color: #94A3B8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Follow Kitchen Updates</span>
+          <div class="social-row" style="display: flex; gap: 10px;">
+            <a href="https://instagram.com" target="_blank" rel="noopener" class="social-icon" aria-label="Instagram" style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: #FFFFFF; text-decoration: none; font-size: 0.8rem; font-weight: 700;">IG</a>
+            <a href="https://facebook.com" target="_blank" rel="noopener" class="social-icon" aria-label="Facebook" style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: #FFFFFF; text-decoration: none; font-size: 0.8rem; font-weight: 700;">FB</a>
+            <a href="https://wa.me/919701325292" target="_blank" rel="noopener" class="social-icon" aria-label="WhatsApp" style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; color: #25D366; text-decoration: none; font-size: 0.8rem; font-weight: 700;">WA</a>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Bottom Legal Bar -->
     <div class="site-footer__bottom">
       <p>&copy; <span id="year"></span> TGS ChefChoice Restaurant. All rights reserved.</p>
       <div class="footer-legal">
-        <a href="privacy-policy">Privacy Policy</a> · <a href="terms">Terms</a>
+        <a href="privacy-policy">Privacy Policy</a> · <a href="terms">Terms of Service</a>
       </div>
     </div>
   </footer>
