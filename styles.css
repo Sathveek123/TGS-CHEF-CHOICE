@@ -2193,3 +2193,208 @@ body.cart-active .wa-sticky-btn {
   }
 }
 
+/* ============================================================
+   ENHANCED STICKY JUMPNAV SCROLLING & VISUAL SHADOW HINTS
+   ============================================================ */
+.menu__jumpnav {
+  position: sticky;
+  top: 70px;
+  z-index: 90;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 14px 24px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1.5px solid var(--saffron-border, #FDE68A);
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.menu__jumpnav::-webkit-scrollbar {
+  height: 5px;
+}
+
+.menu__jumpnav::-webkit-scrollbar-track {
+  background: #FFF8EE;
+}
+
+.menu__jumpnav::-webkit-scrollbar-thumb {
+  background: var(--saffron-gold, #D97706);
+  border-radius: 10px;
+}
+
+.jumpnav__link {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: var(--font-heading, sans-serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-dark, #1E293B);
+  text-decoration: none;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.jumpnav__link:hover {
+  background: #FFF8EE;
+  border-color: var(--saffron-gold, #D97706);
+  color: var(--saffron-gold, #D97706);
+}
+
+.jumpnav__link.active {
+  background: var(--saffron-gold, #D97706);
+  color: #FFFFFF !important;
+  border-color: var(--saffron-gold, #D97706);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
+}
+
+/* ============================================================
+   QUICK CART POPOVER / DROPDOWN WITH DIRECT DELETE BUTTONS
+   ============================================================ */
+.cart-bar__popover {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 24px;
+  right: 24px;
+  max-width: 480px;
+  margin: 0 auto;
+  background: #14110F;
+  border: 1.5px solid var(--saffron-gold, #D97706);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  padding: 16px 20px;
+  z-index: 1000;
+  display: none;
+  animation: popUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.cart-bar__popover.open {
+  display: block;
+}
+
+@keyframes popUp {
+  from { opacity: 0; transform: translateY(12px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cart-popover__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #F8FAFC;
+}
+
+.cart-popover__list {
+  max-height: 240px;
+  overflow-y: auto;
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cart-popover__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  color: #F1F5F9;
+}
+
+.cart-popover__item-name {
+  font-weight: 600;
+  max-width: 160px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cart-popover__item-price {
+  color: #F59E0B;
+  font-weight: 700;
+}
+
+.cart-popover__item-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.popover-qty-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popover-delete-btn {
+  background: #EF4444;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.15s ease;
+}
+
+.popover-delete-btn:hover {
+  background: #DC2626;
+}
+
+/* ============================================================
+   DELIVERY ADDRESS & GPS AUTO-DETECT BUTTON STYLING
+   ============================================================ */
+.gps-btn {
+  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  color: #FFFFFF !important;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  transition: all 0.2s ease;
+}
+
+.gps-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+}
+
+.gps-status {
+  font-size: 0.82rem;
+  font-style: italic;
+  color: #10B981;
+}
+
+

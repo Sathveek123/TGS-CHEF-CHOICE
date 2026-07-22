@@ -342,9 +342,9 @@
   <main>
     <!-- Hero Strip -->
     <div class="order-hero-strip">
-      <p class="about__eyebrow">Table Reservations</p>
+      <p class="about__eyebrow">Table &amp; Delivery Reservations</p>
       <h1 class="about__title">Booked in 60 Seconds,<br>Remembered for Years</h1>
-      <p class="about__lede">Dine-in table hold or takeaway counter — tell us when, we'll be ready with your seat and your dish.</p>
+      <p class="about__lede">Dine-in table hold, takeaway counter, or home delivery — tell us when, we'll be ready for you.</p>
     </div>
 
     <!-- Main Grid -->
@@ -352,22 +352,29 @@
 
       <!-- LEFT: Booking Form -->
       <div class="order-form-card reveal">
-        <h2>🍽️ Table &amp; Takeaway Reservation</h2>
+        <h2>🍽️ Table &amp; Delivery Reservation</h2>
 
         <!-- Service Toggle -->
-        <div class="service-toggle" role="group" aria-label="Service type">
-          <label class="service-pill">
+        <div class="service-toggle" role="group" aria-label="Service type" style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <label class="service-pill" style="flex: 1; min-width: 100px;">
             <input type="radio" name="service" value="dinein" id="svc-dinein" checked>
             <span class="service-pill__label">
               <span class="icon">🪑</span>
               <span class="label-text">Dine-In Table</span>
             </span>
           </label>
-          <label class="service-pill">
+          <label class="service-pill" style="flex: 1; min-width: 100px;">
             <input type="radio" name="service" value="takeaway" id="svc-takeaway">
             <span class="service-pill__label">
               <span class="icon">🥡</span>
               <span class="label-text">Takeaway Counter</span>
+            </span>
+          </label>
+          <label class="service-pill" style="flex: 1; min-width: 100px;">
+            <input type="radio" name="service" value="delivery" id="svc-delivery">
+            <span class="service-pill__label">
+              <span class="icon">🏠</span>
+              <span class="label-text">Home Delivery</span>
             </span>
           </label>
         </div>
@@ -462,16 +469,16 @@
           <p style="font-size: 11px; color: var(--text-muted); margin-top: 8px; font-style: italic;">This ID is also in your WhatsApp message.</p>
         </div>
       </div>
-
       <!-- RIGHT: Info Card -->
-        </div>
-
+      <aside class="order-info-card reveal">
+        <span class="badge">📍 Kasibugga Dining</span>
+        <h3>Reservation Desk</h3>
+        <p>Tarakeswari &amp; Balakrishna Gujju</p>
         <div style="margin-top: 20px; padding: 16px; background: #F8FAFC; border-radius: 12px; border: 1px solid #E2E8F0;">
           <p style="font-family: var(--font-body); font-size: 13px; color: var(--text-muted); line-height: 1.6; margin: 0;">
             📍 <strong style="color:var(--text-dark);">Shivaji Nagar, Kasibugga,</strong><br>Palasa, Andhra Pradesh — 532222
           </p>
         </div>
-
         <a href="menu" style="display: block; text-align: center; margin-top: 16px; font-size: 13px; font-weight: 700; color: var(--saffron-gold); text-decoration: none;">
           📖 Browse Full Menu →
         </a>

@@ -100,14 +100,43 @@
         </div>
         
         <!-- Price Sort -->
-        <div style="flex: 1; min-width: 180px;">
+        <div style="flex: 1; min-width: 170px;">
           <select id="priceSort" style="width: 100%; padding: 12px 16px; border-radius: 30px; border: 1.5px solid #CBD5E1; font-size: 0.9rem; outline: none; background-color: #FFFFFF; font-family: var(--font-body); font-weight: 600; color: var(--text-dark); cursor: pointer;">
             <option value="default">⚖️ Sort: Default</option>
             <option value="low-high">📈 Price: Low to High</option>
             <option value="high-low">📉 Price: High to Low</option>
           </select>
         </div>
-        </section>
+
+        <!-- Quick Jump Category Select -->
+        <div style="flex: 1; min-width: 200px;">
+          <select id="categorySelect" style="width: 100%; padding: 12px 16px; border-radius: 30px; border: 1.5px solid var(--saffron-gold); font-size: 0.9rem; outline: none; background-color: #FFF8EE; font-family: var(--font-body); font-weight: 700; color: var(--text-dark); cursor: pointer;">
+            <option value="">📂 Jump to Category...</option>
+            <option value="biryani">01 🍛 Biryani</option>
+            <option value="fried-rice">02 🍚 Fried Rice</option>
+            <option value="tgs-combos">03 👑 TGS Special Combos</option>
+            <option value="veg-curries">04 🥬 Veg Curries</option>
+            <option value="nonveg-curries">05 🍗 Non-Veg Curries</option>
+            <option value="soups">06 🥣 Soups</option>
+            <option value="fries-rings">07 🍟 Fries &amp; Rings</option>
+            <option value="pizza">08 🍕 Pizza</option>
+            <option value="chicken-starters">09 🍗 Chicken Starters</option>
+            <option value="fish-starters">10 🐟 Fish Starters</option>
+            <option value="prawn-starters">11 🦐 Prawn Starters</option>
+            <option value="calamari">12 🦑 Calamari</option>
+            <option value="spring-rolls">13 🌯 Spring Rolls</option>
+            <option value="veg-starters">14 🧆 Veg Starters</option>
+            <option value="noodles">15 🍜 Noodles</option>
+            <option value="lemonades">16 🍋 Lemonades</option>
+            <option value="shakes">17 🥤 Shakes</option>
+            <option value="burgers">18 🍔 Burgers</option>
+            <option value="brownie">19 🍫 Brownie</option>
+            <option value="ice-cream">20 🍨 Ice Cream</option>
+            <option value="contact-order">21 📞 Counter Desk Info</option>
+          </select>
+        </div>
+      </div>
+    </section>
 
     <!-- Sticky JumpNav -->
     <nav class="menu__jumpnav">
@@ -3580,11 +3609,27 @@
 
   <!-- Floating Cart Bar -->
   <div class="cart-floating-bar" id="cartFloatingBar">
-    <div class="cart-bar__summary">
-      <div class="cart-bar__count" id="cartBadgeCount">0</div>
-      <div class="cart-bar__text">Selected Items · <span class="cart-bar__total" id="cartBadgeTotal">₹0</span></div>
+    <!-- Quick Items Peek Popover -->
+    <div class="cart-bar__popover" id="cartQuickPopover">
+      <div class="cart-popover__header">
+        <span>📋 Selected Dishes (<span id="popoverCount">0</span>)</span>
+        <button id="closePopoverBtn" style="background:none; border:none; color:#94A3B8; font-size:1.1rem; cursor:pointer;" aria-label="Close popover">✕</button>
+      </div>
+      <div class="cart-popover__list" id="popoverItemList">
+        <!-- Dynamic items with [-] Qty [+] and 🗑️ Delete button -->
+      </div>
     </div>
-    <button class="cart-bar__btn" id="reviewOrderBtn">Review &amp; Send Order →</button>
+
+    <div class="cart-bar__summary" id="cartBarSummary" style="cursor: pointer;" title="Click to view or edit selected items">
+      <div class="cart-bar__count" id="cartBadgeCount">0</div>
+      <div class="cart-bar__text">Selected Items · <span class="cart-bar__total" id="cartBadgeTotal">₹0</span> <span style="font-size:0.75rem; color:#F59E0B; margin-left:4px; font-weight:700;">▲ View/Edit</span></div>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+      <button type="button" class="cart-bar__peek-btn" id="toggleCartPeekBtn" style="background: rgba(255,255,255,0.12); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.25); padding: 8px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+        👁️ View Items
+      </button>
+      <button class="cart-bar__btn" id="reviewOrderBtn">Review &amp; Send Order →</button>
+    </div>
   </div>
 
   <!-- Cart Review Modal -->
@@ -3606,18 +3651,36 @@
         <input type="tel" id="cartPhone" placeholder="10-digit mobile number" pattern="[6-9][0-9]{9}" required style="width:100%; padding:10px 14px; border:1.5px solid #CBD5E1; border-radius:8px; font-size:14px; font-family:var(--font-body);">
       </div>
       
-      <div style="margin-bottom: 20px;">
+      <div style="margin-bottom: 16px;">
         <label style="display:block; font-size:12px; font-weight:700; color:var(--text-dark); margin-bottom:6px;">Order Type *</label>
-        <div class="cart-modal__order-type">
-          <label class="cart-type-option selected">
+        <div class="cart-modal__order-type" style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <label class="cart-type-option selected" style="flex: 1; min-width: 100px;">
             <input type="radio" name="cartOrderType" value="dinein" checked>
-            <span>🪑 Dine-In Table</span>
+            <span>🪑 Dine-In</span>
           </label>
-          <label class="cart-type-option">
+          <label class="cart-type-option" style="flex: 1; min-width: 100px;">
             <input type="radio" name="cartOrderType" value="takeaway">
-            <span>🥡 Takeaway Counter</span>
+            <span>🥡 Takeaway</span>
+          </label>
+          <label class="cart-type-option" style="flex: 1; min-width: 100px;">
+            <input type="radio" name="cartOrderType" value="delivery">
+            <span>🏠 Delivery</span>
           </label>
         </div>
+      </div>
+
+      <!-- Address & GPS Location Block -->
+      <div id="deliveryAddressBlock" style="margin-bottom: 16px; display: none; background: #FFF8EE; border: 1.5px dashed var(--saffron-border); padding: 14px; border-radius: 10px;">
+        <label for="cartAddress" style="display:block; font-size:12px; font-weight:700; color:var(--text-dark); margin-bottom:4px;">Delivery Address / Landmark *</label>
+        <textarea id="cartAddress" rows="2" placeholder="House/Door No., Street, Landmark in Kasibugga / Palasa..." style="width:100%; padding:10px 14px; border:1.5px solid #CBD5E1; border-radius:8px; font-size:13px; font-family:var(--font-body); resize: vertical; margin-bottom: 8px;"></textarea>
+
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+          <button type="button" id="detectGpsBtn" class="gps-btn">
+            🎯 Detect My GPS Location
+          </button>
+          <span id="gpsStatusText" class="gps-status"></span>
+        </div>
+        <input type="hidden" id="cartGpsUrl" value="">
       </div>
 
       <button class="cart-modal__send" id="sendCartOrder">

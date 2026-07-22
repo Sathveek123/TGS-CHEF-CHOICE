@@ -537,11 +537,12 @@ function initFAQAccordion() {
    MENU LIVE SEARCH, DIETARY FILTER & PRICE SORTING
    ============================================================ */
 function initMenuSearchAndFilters() {
-  const searchInput = document.getElementById('menuSearch');
-  const typeFilter  = document.getElementById('typeFilter');
-  const priceSort   = document.getElementById('priceSort');
+  const searchInput    = document.getElementById('menuSearch');
+  const typeFilter     = document.getElementById('typeFilter');
+  const priceSort      = document.getElementById('priceSort');
+  const categorySelect = document.getElementById('categorySelect');
 
-  if (!searchInput && !typeFilter && !priceSort) return;
+  if (!searchInput && !typeFilter && !priceSort && !categorySelect) return;
 
   const categories = document.querySelectorAll('.menu__category');
   const items = document.querySelectorAll('.menu__item[data-name]');
@@ -613,10 +614,20 @@ function initMenuSearchAndFilters() {
     applySorting();
     applyFilters();
   });
+
+  // Quick Jump Category Dropdown Handler
+  categorySelect?.addEventListener('change', () => {
+    const catId = categorySelect.value;
+    if (!catId) return;
+    const targetSection = document.getElementById(catId);
+    if (targetSection) {
+      targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
 }
 
 /* ============================================================
-   MENU MINI-CART ENGINE
+   MENU MINI-CART & QUICK POPOVER WITH DELETE & GPS LOCATION
    ============================================================ */
 
 function initMenuCart() {
@@ -642,19 +653,107 @@ function initMenuCart() {
   // In-memory cart state — resets on page refresh by design
   const cart = {};
 
-  const floatingBar  = document.getElementById('cartFloatingBar');
-  const barCount     = document.getElementById('cartBadgeCount');
-  const barTotal     = document.getElementById('cartBadgeTotal');
-  const reviewBtn    = document.getElementById('reviewOrderBtn');
-  const modal        = document.getElementById('cartModal');
-  const modalList    = document.getElementById('cartModalList');
-  const modalTotal   = document.getElementById('cartModalTotal');
-  const sendBtn      = document.getElementById('sendCartOrder');
-  const keepBtn      = document.getElementById('closeCartModal');
-  const cartName     = document.getElementById('cartName');
-  const cartPhone    = document.getElementById('cartPhone');
+  const floatingBar     = document.getElementById('cartFloatingBar');
+  const barCount        = document.getElementById('cartBadgeCount');
+  const barTotal        = document.getElementById('cartBadgeTotal');
+  const barSummary      = document.getElementById('cartBarSummary');
+  const togglePeekBtn   = document.getElementById('toggleCartPeekBtn');
+  const popover         = document.getElementById('cartQuickPopover');
+  const popoverList     = document.getElementById('popoverItemList');
+  const popoverCount    = document.getElementById('popoverCount');
+  const closePopoverBtn = document.getElementById('closePopoverBtn');
 
-  if (!floatingBar || !modal) return; // HTML not present — nothing to do
+  const reviewBtn       = document.getElementById('reviewOrderBtn');
+  const modal           = document.getElementById('cartModal');
+  const modalList       = document.getElementById('cartModalList');
+  const modalTotal      = document.getElementById('cartModalTotal');
+  const sendBtn         = document.getElementById('sendCartOrder');
+  const keepBtn         = document.getElementById('closeCartModal');
+  const cartName        = document.getElementById('cartName');
+  const cartPhone       = document.getElementById('cartPhone');
+  const deliveryAddressBlock = document.getElementById('deliveryAddressBlock');
+  const cartAddress     = document.getElementById('cartAddress');
+  const detectGpsBtn    = document.getElementById('detectGpsBtn');
+  const gpsStatusText   = document.getElementById('gpsStatusText');
+  const cartGpsUrl      = document.getElementById('cartGpsUrl');
+
+  if (!floatingBar || !modal) return;
+
+  function renderPopover() {
+    if (!popoverList) return;
+    popoverList.innerHTML = '';
+    const entries = Object.entries(cart);
+    popoverCount.textContent = entries.length;
+
+    if (entries.length === 0) {
+      popoverList.innerHTML = `<div style="text-align:center; padding:12px; color:#94A3B8; font-size:0.85rem;">No items selected yet</div>`;
+      popover?.classList.remove('open');
+      return;
+    }
+
+    entries.forEach(([name, item]) => {
+      const row = document.createElement('div');
+      row.className = 'cart-popover__item';
+      row.innerHTML = `
+        <div class="cart-popover__item-name" title="${name}">${name}</div>
+        <div class="cart-popover__item-price">₹${item.qty * item.price}</div>
+        <div class="cart-popover__item-actions">
+          <button class="popover-qty-btn popover-minus" data-name="${name}">−</button>
+          <span style="font-weight:700; width:16px; text-align:center;">${item.qty}</span>
+          <button class="popover-qty-btn popover-plus" data-name="${name}">+</button>
+          <button class="popover-delete-btn" data-name="${name}" title="Remove item">🗑️ Delete</button>
+        </div>
+      `;
+      popoverList.appendChild(row);
+    });
+
+    // Add event listeners to popover buttons
+    popoverList.querySelectorAll('.popover-plus').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const n = btn.dataset.name;
+        if (cart[n]) {
+          cart[n].qty++;
+          updateCardQtyDisplay(n);
+          recalcUI();
+          renderPopover();
+        }
+      });
+    });
+
+    popoverList.querySelectorAll('.popover-minus').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const n = btn.dataset.name;
+        if (cart[n] && cart[n].qty > 0) {
+          cart[n].qty--;
+          if (cart[n].qty === 0) delete cart[n];
+          updateCardQtyDisplay(n);
+          recalcUI();
+          renderPopover();
+        }
+      });
+    });
+
+    popoverList.querySelectorAll('.popover-delete-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const n = btn.dataset.name;
+        delete cart[n];
+        updateCardQtyDisplay(n);
+        recalcUI();
+        renderPopover();
+      });
+    });
+  }
+
+  function updateCardQtyDisplay(name) {
+    const card = Array.from(allItems).find(item => item.dataset.name === name);
+    if (card) {
+      const qtyEl = card.querySelector('.qty-value');
+      if (qtyEl) qtyEl.textContent = cart[name] ? cart[name].qty : 0;
+    }
+  }
 
   function recalcUI() {
     const totalItems = Object.values(cart).reduce((s, i) => s + i.qty, 0);
@@ -665,7 +764,10 @@ function initMenuCart() {
     floatingBar.classList.toggle('visible', totalItems > 0);
     document.body.classList.toggle('cart-active', totalItems > 0);
 
-    // Shift sticky WA btn up dynamically
+    if (totalItems === 0) {
+      popover?.classList.remove('open');
+    }
+
     const waBtn = document.getElementById('waStickyBtn');
     if (waBtn) waBtn.style.bottom = totalItems > 0 ? '88px' : '24px';
   }
@@ -683,6 +785,7 @@ function initMenuCart() {
       cart[name].qty++;
       qtyEl.textContent = cart[name].qty;
       recalcUI();
+      if (popover?.classList.contains('open')) renderPopover();
     });
 
     minus.addEventListener('click', () => {
@@ -691,6 +794,55 @@ function initMenuCart() {
       qtyEl.textContent = cart[name].qty;
       if (cart[name].qty === 0) delete cart[name];
       recalcUI();
+      if (popover?.classList.contains('open')) renderPopover();
+    });
+  });
+
+  // Toggle Cart Popover Peak
+  function togglePopover() {
+    renderPopover();
+    popover?.classList.toggle('open');
+  }
+
+  barSummary?.addEventListener('click', togglePopover);
+  togglePeekBtn?.addEventListener('click', togglePopover);
+  closePopoverBtn?.addEventListener('click', () => popover?.classList.remove('open'));
+
+  // GPS Location Detection Handler
+  detectGpsBtn?.addEventListener('click', () => {
+    if (!navigator.geolocation) {
+      if (gpsStatusText) gpsStatusText.textContent = '❌ GPS not supported on your browser.';
+      return;
+    }
+
+    if (gpsStatusText) gpsStatusText.textContent = '⏳ Detecting location...';
+
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const mapsUrl = `https://maps.google.com/?q=${lat.toFixed(5)},${lng.toFixed(5)}`;
+        if (cartGpsUrl) cartGpsUrl.value = mapsUrl;
+        if (cartAddress) cartAddress.value = `📍 Current GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)} (Kasibugga/Palasa area)`;
+        if (gpsStatusText) gpsStatusText.textContent = '✅ Location Detected!';
+      },
+      err => {
+        if (gpsStatusText) gpsStatusText.textContent = '⚠️ Location permission denied or timed out.';
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
+  });
+
+  // Order Type Radio Selection Handler
+  document.querySelectorAll('input[name="cartOrderType"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+      document.querySelectorAll('.cart-type-option').forEach(o => o.classList.remove('selected'));
+      radio.closest('.cart-type-option')?.classList.add('selected');
+
+      const val = radio.value;
+      if (deliveryAddressBlock) {
+        deliveryAddressBlock.style.display = (val === 'delivery' || val === 'takeaway') ? 'block' : 'none';
+      }
     });
   });
 
@@ -718,16 +870,6 @@ function initMenuCart() {
     document.body.style.overflow = '';
   }
 
-  // Handle cart type option clicks (label radio workaround for :has)
-  document.querySelectorAll('.cart-type-option').forEach(opt => {
-    opt.addEventListener('click', () => {
-      document.querySelectorAll('.cart-type-option').forEach(o => o.classList.remove('selected'));
-      opt.classList.add('selected');
-      const radio = opt.querySelector('input[type="radio"]');
-      if (radio) radio.checked = true;
-    });
-  });
-
   // "Send via WhatsApp" 
   sendBtn?.addEventListener('click', () => {
     const name  = cartName?.value.trim() || '';
@@ -740,6 +882,8 @@ function initMenuCart() {
     else cartPhone.classList.remove('invalid');
 
     const orderType = document.querySelector('input[name="cartOrderType"]:checked')?.value || 'dinein';
+    const address   = cartAddress?.value.trim() || '';
+    const gpsUrl    = cartGpsUrl?.value || '';
     const orderId   = generateOrderId();
 
     let msg = `*New Order — TGS ChefChoice* 🛒\n\n`;
@@ -749,17 +893,26 @@ function initMenuCart() {
     }
     msg += `*Name:* ${name}\n`;
     msg += `*Phone:* ${phone}\n`;
-    msg += `*Type:* ${orderType === 'dinein' ? 'Dine-In' : 'Takeaway'}\n\n`;
-    msg += `*Items Ordered:*\n`;
+    msg += `*Order Type:* ${orderType === 'dinein' ? '🪑 Dine-In' : (orderType === 'delivery' ? '🏠 Home Delivery' : '🥡 Takeaway')}\n`;
+
+    if (orderType !== 'dinein' && address) {
+      msg += `*Delivery Address:* ${address}\n`;
+    }
+    if (gpsUrl) {
+      msg += `*GPS Map Pin:* ${gpsUrl}\n`;
+    }
+
+    msg += `\n*Items Ordered:*\n`;
 
     let total = 0;
     Object.entries(cart).forEach(([itemName, item]) => {
       msg += `• ${item.qty} × ${itemName} — ₹${item.qty * item.price}\n`;
       total += item.qty * item.price;
     });
-    msg += `\n*Total: ₹${total}*\n\n_Sent via tgs-chef-choice.vercel.app_`;
+    msg += `\n*Total Amount: ₹${total}*\n\n_Sent via tgs-chef-choice.vercel.app_`;
 
-    openWhatsApp(msg);
+    const encoded = encodeURIComponent(msg);
+    window.open(`https://wa.me/919701325292?text=${encoded}`, '_blank');
     closeModal();
   });
 
