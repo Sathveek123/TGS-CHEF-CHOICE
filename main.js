@@ -531,6 +531,8 @@ function initFAQAccordion() {
       item.classList.toggle('open');
     });
   });
+}
+
 /* ============================================================
    MENU LIVE SEARCH, DIETARY FILTER & PRICE SORTING
    ============================================================ */
