@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initEventFormValidation();
   initContactFormValidation();
   initFAQAccordion();
+  initMenuSearchAndFilters(); // Live Search, Veg/NonVeg Filter, and Price Sort for Menu
   initMenuCart();           // Mini-cart on menu page
   initPackageWAButtons();   // WA buttons on tier/package cards
   initStickyWhatsApp();     // Floating WA button on all pages
@@ -530,11 +531,92 @@ function initFAQAccordion() {
       item.classList.toggle('open');
     });
   });
+/* ============================================================
+   MENU LIVE SEARCH, DIETARY FILTER & PRICE SORTING
+   ============================================================ */
+function initMenuSearchAndFilters() {
+  const searchInput = document.getElementById('menuSearch');
+  const typeFilter  = document.getElementById('typeFilter');
+  const priceSort   = document.getElementById('priceSort');
+
+  if (!searchInput && !typeFilter && !priceSort) return;
+
+  const categories = document.querySelectorAll('.menu__category');
+  const items = document.querySelectorAll('.menu__item[data-name]');
+  if (!categories.length || !items.length) return;
+
+  function applyFilters() {
+    const query = (searchInput?.value || '').toLowerCase().trim();
+    const type  = typeFilter?.value || 'all';
+
+    categories.forEach(cat => {
+      let visibleCount = 0;
+      const catItems = cat.querySelectorAll('.menu__item[data-name]');
+
+      catItems.forEach(item => {
+        const name = (item.dataset.name || '').toLowerCase();
+        const price = item.dataset.price || '';
+        const isVeg = item.dataset.veg === 'true';
+        const textContent = item.textContent.toLowerCase();
+
+        // Check query match
+        const matchesQuery = !query || name.includes(query) || textContent.includes(query) || price.includes(query);
+
+        // Check type match
+        let matchesType = true;
+        if (type === 'veg') matchesType = isVeg;
+        else if (type === 'nonveg') matchesType = !isVeg;
+
+        const isVisible = matchesQuery && matchesType;
+        item.style.display = isVisible ? 'flex' : 'none';
+        if (isVisible) visibleCount++;
+      });
+
+      // Hide category section header entirely if zero items match in that category
+      cat.style.display = visibleCount > 0 ? 'block' : 'none';
+    });
+  }
+
+  function applySorting() {
+    const sortVal = priceSort?.value || 'default';
+
+    categories.forEach(cat => {
+      const grid = cat.querySelector('.menu__grid-2col');
+      if (!grid) return;
+      const itemList = Array.from(grid.querySelectorAll('.menu__item[data-name]'));
+
+      if (sortVal === 'default') {
+        // Restore original DOM order
+        itemList.sort((a, b) => (parseInt(a.dataset.originalIndex || '0', 10) - parseInt(b.dataset.originalIndex || '0', 10)));
+      } else {
+        itemList.sort((a, b) => {
+          const priceA = parseInt(a.dataset.price, 10) || 0;
+          const priceB = parseInt(b.dataset.price, 10) || 0;
+          return sortVal === 'low-high' ? priceA - priceB : priceB - priceA;
+        });
+      }
+
+      itemList.forEach(item => grid.appendChild(item));
+    });
+  }
+
+  // Store original index for default sort restoration
+  items.forEach((item, idx) => {
+    item.dataset.originalIndex = idx;
+  });
+
+  searchInput?.addEventListener('input', applyFilters);
+  typeFilter?.addEventListener('change', applyFilters);
+  priceSort?.addEventListener('change', () => {
+    applySorting();
+    applyFilters();
+  });
 }
 
 /* ============================================================
    MENU MINI-CART ENGINE
    ============================================================ */
+
 function initMenuCart() {
   const allItems = document.querySelectorAll('.menu__item[data-name]');
   if (!allItems.length) return;
