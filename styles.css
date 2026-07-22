@@ -20,7 +20,7 @@
   --muted-clay:      #C9BBA3;
   --off-white:       #F7F1E6;
 
-  --bg-app:          transparent;  /* Let the luxury textured paper background show through */
+  --bg-app:          #FAF9F5;  /* Luxury textured paper warm cream — prevents invisible sections */
   --bg-surface:      #FFFFFF;  /* Pure White Card Surface */
   --bg-subtle:       #F8FAFC;  /* Subtle Slate Light Section Tint */
   
@@ -193,13 +193,13 @@ button { cursor: pointer; }
   position: fixed;
   inset: 0;
   z-index: 10000;
-  background: radial-gradient(circle at 50% 45%, #FFFDF6 0%, #FAF6EB 100%);
+  background: radial-gradient(ellipse at 50% 50%, #241D16 0%, #14110F 55%, #0D0B08 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   clip-path: circle(150% at 50% 50%);
-  transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.4s ease 0.3s;
+  transition: clip-path 0.9s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.4s ease 0.4s;
   cursor: pointer;
 }
 
@@ -211,12 +211,21 @@ button { cursor: pointer; }
 
 .splash-bg-glow {
   position: absolute;
-  width: 500px;
-  height: 500px;
+  width: 640px;
+  height: 640px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(217, 119, 6, 0.12), transparent 70%);
-  filter: blur(80px);
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.28) 0%, rgba(217, 119, 6, 0.08) 55%, transparent 75%);
+  filter: blur(70px);
+  animation: emberDrift 20s ease-in-out infinite;
   pointer-events: none;
+}
+
+@keyframes emberDrift {
+  0%   { transform: translate(-40px, -30px) scale(1); }
+  25%  { transform: translate(30px, -50px) scale(1.1); }
+  50%  { transform: translate(50px, 30px) scale(0.95); }
+  75%  { transform: translate(-20px, 50px) scale(1.08); }
+  100% { transform: translate(-40px, -30px) scale(1); }
 }
 
 .steam-wrap {
@@ -233,26 +242,26 @@ button { cursor: pointer; }
 .wisp {
   position: absolute;
   bottom: 0;
-  width: 40px;
-  height: 130px;
+  width: 44px;
+  height: 140px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(217, 119, 6, 0.08), transparent 70%);
-  filter: blur(14px);
+  background: radial-gradient(ellipse at center, rgba(255, 240, 200, 0.18), transparent 70%);
+  filter: blur(18px);
   opacity: 0;
-  animation: rise 6s ease-in infinite;
+  animation: rise 7s ease-in infinite;
 }
 
 .w1 { left: 15%; animation-delay: 0s; }
-.w2 { left: 38%; animation-delay: 1.4s; }
-.w3 { left: 62%; animation-delay: 2.8s; }
-.w4 { left: 82%; animation-delay: 4.2s; }
-.w5 { left: 48%; animation-delay: 5.5s; }
+.w2 { left: 38%; animation-delay: 1.6s; }
+.w3 { left: 62%; animation-delay: 3.2s; }
+.w4 { left: 80%; animation-delay: 4.8s; }
+.w5 { left: 48%; animation-delay: 6s; }
 
 @keyframes rise {
   0%   { transform: translateY(0) translateX(0) scale(0.8) rotate(0deg); opacity: 0; }
-  15%  { opacity: 0.5; }
-  50%  { transform: translateY(-140px) translateX(20px) scale(1.3) rotate(8deg); opacity: 0.35; }
-  100% { transform: translateY(-280px) translateX(-15px) scale(1.8) rotate(-6deg); opacity: 0; }
+  12%  { opacity: 0.6; }
+  50%  { transform: translateY(-160px) translateX(25px) scale(1.4) rotate(10deg); opacity: 0.35; }
+  100% { transform: translateY(-320px) translateX(-18px) scale(2) rotate(-8deg); opacity: 0; }
 }
 
 .stamp-wrap {
@@ -296,22 +305,23 @@ button { cursor: pointer; }
 
 @keyframes logoPulse {
   0% {
-    filter: drop-shadow(0 0 20px rgba(201,150,46,0.25));
+    filter: drop-shadow(0 0 24px rgba(201,150,46,0.45)) drop-shadow(0 0 60px rgba(217,119,6,0.2));
   }
   100% {
-    filter: drop-shadow(0 0 40px rgba(201,150,46,0.5));
+    filter: drop-shadow(0 0 48px rgba(201,150,46,0.8)) drop-shadow(0 0 100px rgba(217,119,6,0.35));
   }
 }
 
 .splash-tagline {
   font-family: var(--font-accent);
   font-style: italic;
-  font-size: 1.25rem;
-  color: var(--off-white);
-  margin-top: 24px;
+  font-size: 1.3rem;
+  color: #E8C878;
+  margin-top: 28px;
   opacity: 0;
-  animation: ticketFade 0.8s ease 1.2s forwards;
-  letter-spacing: 1px;
+  animation: ticketFade 0.9s ease 1.4s forwards;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 16px rgba(217,119,6,0.5);
 }
 
 @keyframes ticketFade {
@@ -490,12 +500,15 @@ button { cursor: pointer; }
   display: flex;
   gap: 8px;
   overflow-x: auto;
+  overflow-y: hidden;
   white-space: nowrap;
+  max-width: 100vw;
   background: rgba(255, 255, 255, 0.97);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid #E2E8F0;
   padding: 12px 6vw;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .menu__jumpnav::-webkit-scrollbar { display: none; }
