@@ -271,12 +271,15 @@ button { cursor: pointer; }
   align-items: center;
   justify-content: center;
   position: relative;
+  border-radius: 50%;
+  overflow: hidden;
 }
 
 .splash-logo-img {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
   filter: drop-shadow(0 0 30px rgba(201,150,46,0.3));
   opacity: 0;
   transform: scale(0.85);
