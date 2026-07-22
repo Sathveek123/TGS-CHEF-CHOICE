@@ -1,25 +1,31 @@
 # TGS ChefChoice Restaurant — Official Master Documentation 👑
 
-Welcome to the complete project documentation for the **TGS ChefChoice Restaurant** web platform and digital ordering ecosystem.
+Welcome to the master documentation suite for the **TGS ChefChoice Restaurant** web application and digital ordering ecosystem.
 
 > **Live Website URL:** [https://tgs-chef-choice.vercel.app/](https://tgs-chef-choice.vercel.app/)  
 > **GitHub Repository:** [Sathveek123/TGS-CHEF-CHOICE](https://github.com/Sathveek123/TGS-CHEF-CHOICE)  
-> **Primary Contact Number / WhatsApp Desk:** `+91 97013 25292`  
+> **Primary Counter Phone / WhatsApp Desk:** `+91 97013 25292`  
 > **Location:** Shivaji Nagar, Kasibugga, Palasa, Andhra Pradesh 532222  
 > **Opening Hours:** Daily 11:30 AM – 10:30 PM  
 > **Owners:** Tarakeswari & Balakrishna Gujju  
 
 ---
 
-## 📚 Documentation Index
+## 📚 Complete 10-Part Documentation Index
 
-| Document | Description | Link |
-| :--- | :--- | :--- |
-| 📖 **Menu System Docs** | 21-section master menu, price leaders, and filter engine | [`docs/MENU_STRUCTURE.md`](./MENU_STRUCTURE.md) |
-| 💬 **WhatsApp Automation** | Reference generator, mini-cart, and QR code table ordering | [`docs/WHATSAPP_AUTOMATION.md`](./WHATSAPP_AUTOMATION.md) |
-| 🎨 **Brand Guidelines** | Color tokens, typography, logo usage, and UI design rules | [`docs/BRAND_GUIDELINES.md`](./BRAND_GUIDELINES.md) |
-| 🚀 **Deployment Guide** | GitHub & Vercel hosting, custom domain setup, and maintenance | [`docs/DEPLOYMENT_GUIDE.md`](./DEPLOYMENT_GUIDE.md) |
-| 📱 **Owner's Reply Sheet** | Canned WhatsApp replies for Tarakeswari & Balakrishna | [`WHATSAPP_REPLY_CHEAT_SHEET.md`](../WHATSAPP_REPLY_CHEAT_SHEET.md) |
+| # | Document File | Description | Link |
+| :-: | :--- | :--- | :--- |
+| **01** | `README.md` | Master Index, System Overview & Project Structure | [`docs/README.md`](./README.md) |
+| **02** | `MENU_STRUCTURE.md` | 21-Section Menu Board Specs, Data Attributes & Filters | [`docs/MENU_STRUCTURE.md`](./MENU_STRUCTURE.md) |
+| **03** | `WHATSAPP_AUTOMATION.md` | Order Ref ID Format, Mini-Cart Payload & QR Table System | [`docs/WHATSAPP_AUTOMATION.md`](./WHATSAPP_AUTOMATION.md) |
+| **04** | `BRAND_GUIDELINES.md` | `:root` Color Tokens, Typography, Logo Rules & Elevation | [`docs/BRAND_GUIDELINES.md`](./BRAND_GUIDELINES.md) |
+| **05** | `COMPONENT_LIBRARY.md` | Visual Catalog & Class Specs for all 9 Primary UI Components | [`docs/COMPONENT_LIBRARY.md`](./COMPONENT_LIBRARY.md) |
+| **06** | `SEO_AND_SCHEMA_SPEC.md` | OpenGraph Sharing Cards & Google Restaurant JSON-LD Payload | [`docs/SEO_AND_SCHEMA_SPEC.md`](./SEO_AND_SCHEMA_SPEC.md) |
+| **07** | `CLIENT_HANDOVER_GUIDE.md` | Non-Technical Manual for Tarakeswari & Balakrishna Gujju | [`docs/CLIENT_HANDOVER_GUIDE.md`](./CLIENT_HANDOVER_GUIDE.md) |
+| **08** | `JAVASCRIPT_ARCHITECTURE.md` | Developer Spec for `main.js` Execution Chain & Controllers | [`docs/JAVASCRIPT_ARCHITECTURE.md`](./JAVASCRIPT_ARCHITECTURE.md) |
+| **09** | `MARKETING_AND_PROMOTIONS.md` | Regional Campaign Strategy, Sankranti Specials & Growth Plan | [`docs/MARKETING_AND_PROMOTIONS.md`](./MARKETING_AND_PROMOTIONS.md) |
+| **10** | `TESTING_AND_AUDIT_REPORT.md` | Cross-Device Viewport Breakpoints, Contrast (AAA) & Web Vitals | [`docs/TESTING_AND_AUDIT_REPORT.md`](./TESTING_AND_AUDIT_REPORT.md) |
+| **11** | `WHATSAPP_REPLY_CHEAT_SHEET.md` | 1-Tap Copy-Paste WhatsApp Responses for Owners | [`WHATSAPP_REPLY_CHEAT_SHEET.md`](../WHATSAPP_REPLY_CHEAT_SHEET.md) |
 
 ---
 
@@ -28,20 +34,8 @@ Welcome to the complete project documentation for the **TGS ChefChoice Restauran
 - **Core:** Semantic HTML5, Vanilla JavaScript (ES6+), CSS3 Vanilla Design System (Zero Framework Overhead).
 - **Styling:** Custom CSS Custom Properties (`:root` design tokens), CSS Grid, Flexbox, Fluid Typography (`clamp()`), Modern Elevation Glassmorphism.
 - **Typography:** Google Fonts (`Outfit`, `Cormorant Garamond`, `Plus Jakarta Sans`, `JetBrains Mono`).
-- **Icons & Graphics:** Handcrafted inline SVGs, high-res webp/jpg culinary imagery, custom floating SVG animations.
+- **Icons & Graphics:** Handcrafted inline SVGs, high-res culinary imagery, custom floating SVG animations.
 - **Hosting & CI/CD:** GitHub + Vercel Instant Deployment pipeline.
-
----
-
-## 🌟 Key Features Overview
-
-1. **Splash Screen V2:** Custom dark ink background (`#14110F`) with radial saffron warm glow, floating steam wisps, and an animated Iris-Wipe exit.
-2. **Real Brand Asset Integration:** Circular brand logo badge (`tgs-circular.png`), owner photo (`owners-tarakeswari-balakrishna.png`), and exact Kasibugga map coordinates.
-3. **21-Section Master Menu (`menu.html`):** Real physical menu board data with price leaders, veg/nonveg icons, search filter, and sticky horizontal jump navigation.
-4. **WhatsApp Ordering Engine (`order.html` & `menu.html`):** Zero-backend client-side ordering system generating unique Reference IDs (`TGS-YYMMDD-XXXX`).
-5. **Interactive Mini-Cart:** Item quantity steppers (`- 0 +`), floating summary bar, itemized review modal.
-6. **QR Code Table Ordering:** Scan table QR codes (`menu.html?table=7`) to automatically tag orders with table numbers.
-7. **Full SEO & Social Sharing:** Favicon icons, OpenGraph sharing preview cards, and Google LocalBusiness JSON-LD Schema markup on all pages.
 
 ---
 
@@ -68,10 +62,15 @@ TGS CHEF CHOICE/
 ├── main.js                    # Core interactive script & WhatsApp engines
 ├── WHATSAPP_REPLY_CHEAT_SHEET.md # Owner reply templates for WhatsApp
 ├── assets/                    # Optimized image assets (logos, gallery, owners)
-└── docs/                      # Comprehensive documentation suite
+└── docs/                      # Master 10-Part Documentation Suite
     ├── README.md              # Master Index (This File)
     ├── MENU_STRUCTURE.md      # Menu Data & Architecture
     ├── WHATSAPP_AUTOMATION.md # WhatsApp & QR System Spec
     ├── BRAND_GUIDELINES.md    # Design Tokens & Styling Rules
-    └── DEPLOYMENT_GUIDE.md    # Vercel & Hosting Setup
+    ├── COMPONENT_LIBRARY.md   # Complete Component Catalog
+    ├── SEO_AND_SCHEMA_SPEC.md # OpenGraph & Google Schema Spec
+    ├── CLIENT_HANDOVER_GUIDE.md# Non-Technical Owner Manual
+    ├── JAVASCRIPT_ARCHITECTURE.md # Main.js Execution Pipeline
+    ├── MARKETING_AND_PROMOTIONS.md# Local Promotion Strategy
+    └── TESTING_AND_AUDIT_REPORT.md# Cross-Device & Web Vitals Audit
 ```
