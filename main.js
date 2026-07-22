@@ -539,6 +539,22 @@ function initMenuCart() {
   const allItems = document.querySelectorAll('.menu__item[data-name]');
   if (!allItems.length) return;
 
+  // Read ?table= URL parameter for dine-in QR table ordering
+  const urlParams = new URLSearchParams(window.location.search);
+  const tableParam = urlParams.get('table');
+  if (tableParam) {
+    window.tgsTableNumber = tableParam;
+    let tableBanner = document.getElementById('tableOrderBanner');
+    if (!tableBanner) {
+      tableBanner = document.createElement('div');
+      tableBanner.id = 'tableOrderBanner';
+      tableBanner.className = 'table-order-banner';
+      tableBanner.innerHTML = `<span>📍 Ordering for <strong>Table ${tableParam}</strong></span>`;
+      const mainEl = document.querySelector('main');
+      if (mainEl) mainEl.prepend(tableBanner);
+    }
+  }
+
   // In-memory cart state — resets on page refresh by design
   const cart = {};
 
@@ -644,6 +660,9 @@ function initMenuCart() {
 
     let msg = `*New Order — TGS ChefChoice* 🛒\n\n`;
     msg += `*Order ID:* ${orderId}\n`;
+    if (window.tgsTableNumber) {
+      msg += `*Table:* Table ${window.tgsTableNumber}\n`;
+    }
     msg += `*Name:* ${name}\n`;
     msg += `*Phone:* ${phone}\n`;
     msg += `*Type:* ${orderType === 'dinein' ? 'Dine-In' : 'Takeaway'}\n\n`;

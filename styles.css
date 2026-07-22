@@ -1711,6 +1711,22 @@ button { cursor: pointer; }
    WHATSAPP ORDERING SYSTEM — Mini-Cart, Floating Bar, Modal
    ============================================================ */
 
+/* --- Table Order Banner (QR Code scans: ?table=X) --- */
+.table-order-banner {
+  background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+  border-bottom: 2px solid var(--saffron-gold);
+  padding: 10px 6vw;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-dark);
+  position: sticky;
+  top: 58px;
+  z-index: 90;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
 /* --- Per-Item Quantity Stepper (menu.html) --- */
 .menu__item-cart-control {
   display: flex;
