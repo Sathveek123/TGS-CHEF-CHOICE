@@ -821,9 +821,16 @@ function initMenuCart() {
       pos => {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
-        const mapsUrl = `https://maps.google.com/?q=${lat.toFixed(5)},${lng.toFixed(5)}`;
-        if (cartGpsUrl) cartGpsUrl.value = mapsUrl;
-        if (cartAddress) cartAddress.value = `📍 Current GPS: ${lat.toFixed(4)}, ${lng.toFixed(4)} (Kasibugga/Palasa area)`;
+        const customerPinUrl = `https://maps.google.com/?q=${lat.toFixed(5)},${lng.toFixed(5)}`;
+        // Turn-by-turn Driving Route from TGS ChefChoice Kasibugga to Customer Delivery Location
+        const routeFromTgsUrl = `https://www.google.com/maps/dir/?api=1&origin=TGS+ChefChoice+Kasibugga&destination=${lat.toFixed(5)},${lng.toFixed(5)}`;
+
+        if (cartGpsUrl) cartGpsUrl.value = customerPinUrl;
+        window.tgsRouteUrl = routeFromTgsUrl;
+
+        if (cartAddress) {
+          cartAddress.value = `📍 Current GPS Coords: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+        }
         if (gpsStatusText) gpsStatusText.textContent = '✅ Location Detected!';
       },
       err => {
@@ -899,7 +906,10 @@ function initMenuCart() {
       msg += `*Delivery Address:* ${address}\n`;
     }
     if (gpsUrl) {
-      msg += `*GPS Map Pin:* ${gpsUrl}\n`;
+      msg += `*Customer GPS Pin:* ${gpsUrl}\n`;
+      if (window.tgsRouteUrl) {
+        msg += `*🚗 Driving Route from TGS:* ${window.tgsRouteUrl}\n`;
+      }
     }
 
     msg += `\n*Items Ordered:*\n`;
