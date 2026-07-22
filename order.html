@@ -391,7 +391,7 @@
             <label for="ord-occasion">Occasion</label>
             <select id="ord-occasion" name="occasion">
               <option value="">Select if applicable</option>
-              <option value="birthday">🎂 Birthday Celebration</option>
+
               <option value="anniversary">💍 Anniversary</option>
               <option value="family">👨‍👩‍👧 Family Gathering</option>
               <option value="business">💼 Business Dinner</option>
@@ -400,40 +400,30 @@
             </select>
           </div>
 
+          <p class="form-section-title">Special Requests</p>
+
           <div class="form-group">
             <label for="ord-notes">Additional Notes</label>
             <textarea id="ord-notes" name="notes" rows="3" placeholder="High chair needed, birthday surprise, quiet corner, allergy info..."></textarea>
           </div>
 
           <button type="submit" class="submit-btn" id="submitBtn">
-            ✓ Confirm Reservation
+            💬 Confirm &amp; Send via WhatsApp
           </button>
         </form>
 
-        <!-- Success Banner -->
-        <div class="success-banner" id="successBanner">
-          <div class="icon">🎉</div>
-          <h3>Reservation Received!</h3>
-          <p>We'll confirm your table via phone call within 10 minutes. Looking forward to serving you!</p>
+        <!-- WhatsApp Success Banner -->
+        <div class="wa-success-banner" id="successBanner">
+          <div style="font-size: 2.5rem; margin-bottom: 10px;">✅</div>
+          <h3 style="font-family: var(--font-heading); font-size: 1.2rem; color: #16A34A; margin-bottom: 6px;">WhatsApp Opening...</h3>
+          <p style="font-size: 13px; color: #166534; margin-bottom: 14px;">Your booking is pre-filled in WhatsApp. Tap <strong>Send</strong> and we'll call to confirm your table.</p>
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">Your reference ID:</p>
+          <span class="ref-id">TGS-000000-0000</span>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 8px; font-style: italic;">This ID is also in your WhatsApp message.</p>
         </div>
       </div>
 
       <!-- RIGHT: Info Card -->
-      <aside class="order-info-card reveal">
-        <span class="badge">● Live Desk · Instant Confirmation</span>
-        <h3>Front Counter Desk</h3>
-        <p>Speak directly to our Kasibugga counter team for immediate table hold or urgent takeaway orders.</p>
-
-        <a href="tel:+919701325292" class="info-btn info-btn--gold">
-          📞 Call Now · 097013 25292
-        </a>
-        <a href="https://wa.me/919701325292?text=Hi%20TGS%20ChefChoice!%20I%20want%20to%20reserve%20a%20table." target="_blank" rel="noopener" class="info-btn info-btn--wa">
-          💬 WhatsApp Us Directly
-        </a>
-
-        <div class="hours-table">
-          <h4>Opening Hours</h4>
-          <div class="hours-row"><span>Every Day</span><span>11:30 AM – 10:30 PM</span></div>
         </div>
 
         <div style="margin-top: 20px; padding: 16px; background: #F8FAFC; border-radius: 12px; border: 1px solid #E2E8F0;">
