@@ -1,8 +1,9 @@
 /* ============================================================
-   TGS CHEFCHOICE — Admin Dashboard Interactive Logic (v2.1)
-   Includes: Multi-filtering, CSV export, Order Detail modal, 
-   Internal Notes, Top Selling Dishes widget, Regular customer tags,
-   Printable Kitchen Slips, and WhatsApp Order Importer/Parser.
+   TGS CHEFCHOICE — Admin Dashboard Interactive Logic (v2.2)
+   Includes: Multi-filtering, CSV export, Order Detail modal with Back Button,
+   Internal Notes, Cancellation Reason Prompt + WA message, Predefined Confirm WA message,
+   Top Selling Dishes widget, Regular customer tags, Printable Kitchen Slips,
+   and WhatsApp Order Importer/Parser.
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -143,7 +144,7 @@ function renderDashboard() {
   const totalCount = filtered.length;
   const confirmedList = filtered.filter(r => r.status === 'Confirmed');
   const revenue = confirmedList.reduce((s, r) => s + (r.totalAmount || 0), 0);
-  const pendingCount = filtered.filter(r => r.status === 'Pending').length;
+  const pendingCount = filtered.filter(r => r.status === 'Pending' || r.status === 'Awaiting WA').length;
   const cancelledCount = filtered.filter(r => r.status === 'Cancelled').length;
 
   document.getElementById('statTotalCount').textContent = totalCount;
@@ -471,6 +472,8 @@ function getStatusBadgeHtml(status) {
     return `<span class="status-badge status-confirmed">✓ Confirmed</span>`;
   } else if (status === 'Cancelled') {
     return `<span class="status-badge status-cancelled">✕ Cancelled</span>`;
+  } else if (status === 'Awaiting WA') {
+    return `<span class="status-badge status-awaiting">⏳ Awaiting WA</span>`;
   } else {
     return `<span class="status-badge status-pending">⏳ Pending</span>`;
   }
@@ -520,6 +523,12 @@ function setupModals() {
     setTimeout(() => copyBtn.textContent = '🔗 Copy UPI Deep-Link', 2000);
   });
 }
+
+// Close Detail Modal helper
+window.closeDetailModal = function() {
+  const modal = document.getElementById('orderDetailModal');
+  if (modal) modal.classList.remove('open');
+};
 
 // WhatsApp Order Text Parser
 function parseWhatsAppOrderText(text) {
@@ -577,7 +586,13 @@ window.openDetailModal = function(orderId) {
   const bodyEl = document.getElementById('detailModalBody');
   const actionsEl = document.getElementById('detailModalActions');
 
-  if (titleEl) titleEl.textContent = `🆔 ${row.orderId} — Order Details`;
+  if (titleEl) {
+    titleEl.innerHTML = `
+      <div style="display:flex; align-items:center; justify-style:space-between; width:100%; gap:12px;">
+        <span>🆔 ${row.orderId} — Order Details</span>
+      </div>
+    `;
+  }
 
   let itemsTableHtml = '';
   if (row.items && Array.isArray(row.items)) {
@@ -605,14 +620,26 @@ window.openDetailModal = function(orderId) {
     `;
   }
 
+  const placedDate = new Date(row.timestamp || Date.now());
+  const formattedTime = placedDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+  const formattedDate = placedDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+
   if (bodyEl) {
     bodyEl.innerHTML = `
+      <div style="background:#FFF8EE; border:1px solid var(--saffron-border); padding:10px 14px; border-radius:10px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between;">
+        <div>
+          <span style="font-weight:700; color:var(--text-dark);">🕒 Placed Timestamp:</span>
+          <span style="font-weight:800; color:var(--saffron-gold); margin-left:6px;">${formattedDate} at ${formattedTime}</span>
+        </div>
+        <button onclick="closeDetailModal()" class="btn-back-modal">⬅️ Back to Table</button>
+      </div>
+
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:14px; font-size:0.9rem;">
         <div>
           <div style="font-size:0.78rem; color:#64748B; font-weight:700; text-transform:uppercase;">Customer Info</div>
           <div style="font-size:1.1rem; font-weight:800; color:var(--text-dark); margin-top:2px;">${escapeHtml(row.name)}</div>
           <div style="margin-top:4px;"><a href="tel:${row.phone}" style="color:var(--saffron-gold); font-weight:700;">📞 ${row.phone}</a></div>
-          <div style="margin-top:4px; color:#64748B; font-size:0.82rem;">Placed: ${new Date(row.timestamp || Date.now()).toLocaleString()}</div>
+          <div style="margin-top:4px; font-size:0.82rem; color:#475569;">Status: <strong>${escapeHtml(row.status)}</strong></div>
         </div>
 
         <div>
@@ -629,6 +656,12 @@ window.openDetailModal = function(orderId) {
         <span style="font-family:var(--font-heading); font-size:1.5rem; font-weight:800; color:var(--saffron-gold);">₹${row.totalAmount}</span>
       </div>
 
+      ${row.cancelReason ? `
+        <div style="margin-top:12px; padding:10px; background:#FEE2E2; border:1px solid #FCA5A5; border-radius:8px; color:#991B1B; font-size:0.85rem;">
+          <strong>❌ Reason for Cancellation:</strong> ${escapeHtml(row.cancelReason)}
+        </div>
+      ` : ''}
+
       <div style="margin-top:16px;">
         <label style="font-size:0.82rem; font-weight:700; color:var(--text-dark); display:block; margin-bottom:6px;">📝 Internal Owner Notes / Special Instructions:</label>
         <textarea id="modalOwnerNotesInput" style="width:100%; height:70px; padding:10px; border:1.5px solid #CBD5E1; border-radius:8px; font-size:0.85rem; outline:none;" placeholder="Jot down internal operational notes (e.g. customer requested extra spicy, deliver by 8 PM)...">${escapeHtml(row.internalNotes || '')}</textarea>
@@ -643,6 +676,7 @@ window.openDetailModal = function(orderId) {
       <button onclick="cancelOrder('${row.orderId}')" style="background:#EF4444; color:#FFF; border:none; padding:8px 14px; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">❌ Cancel Order</button>
       <button onclick="openQrModal(${row.totalAmount})" style="background:#3B82F6; color:#FFF; border:none; padding:8px 14px; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">📱 UPI Payment QR</button>
       <button onclick="printKitchenTicket('${row.orderId}')" style="background:#64748B; color:#FFF; border:none; padding:8px 14px; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">🖨️ Print Kitchen Ticket</button>
+      <button onclick="closeDetailModal()" class="btn-back-modal" style="margin-left:auto;">⬅️ Back to Table</button>
     `;
   }
 
@@ -662,46 +696,57 @@ window.saveOwnerNotes = function(orderId) {
   }
 };
 
-// Confirm Order Handler with WhatsApp Trigger
+// Confirm Order Handler with Predefined WhatsApp Confirmation
 window.confirmOrder = function(orderId) {
   const list = getRecords(activeTab);
   const idx = list.findIndex(r => r.orderId === orderId);
-  if (idx !== -1) {
-    list[idx].status = 'Confirmed';
-    saveRecords(activeTab, list);
-    renderDashboard();
+  if (idx === -1) return;
 
-    const row = list[idx];
-    const phone = (row.phone || '').replace(/[^0-9]/g, '');
+  list[idx].status = 'Confirmed';
+  saveRecords(activeTab, list);
+  renderDashboard();
 
-    let msg = `Namaste! 🙏 Order received & confirmed ✅\n\n`;
-    msg += `Order ID: ${row.orderId}\n`;
-    msg += `Total: ₹${row.totalAmount}\n`;
-    msg += `Prep Time: ~20-25 minutes\n\n`;
-    msg += `Pay on delivery/pickup via Cash or UPI. Looking forward to serving you! 🍽️`;
+  const row = list[idx];
+  const phone = (row.phone || '').replace(/[^0-9]/g, '');
 
-    window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-  }
+  let msg = `Namaste! 🙏 Order Received & Confirmed ✅\n\n`;
+  msg += `Order ID: ${row.orderId}\n`;
+  msg += `Customer Name: ${row.name}\n`;
+  msg += `Total Bill: ₹${row.totalAmount}\n`;
+  msg += `Prep & Delivery Time: ~20-25 minutes\n\n`;
+  msg += `Payment: Pay on delivery/pickup via Cash or UPI.\n`;
+  msg += `Looking forward to serving you delicious food! 🍽️\n`;
+  msg += `- TGS ChefChoice Kasibugga`;
+
+  window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, '_blank');
 };
 
-// Cancel Order Handler with Optional WhatsApp Cancellation Trigger
+// Cancel Order Handler with Reason Prompt & WhatsApp Notice
 window.cancelOrder = function(orderId) {
   const list = getRecords(activeTab);
   const idx = list.findIndex(r => r.orderId === orderId);
-  if (idx !== -1) {
-    list[idx].status = 'Cancelled';
-    saveRecords(activeTab, list);
-    renderDashboard();
+  if (idx === -1) return;
 
-    const row = list[idx];
-    const phone = (row.phone || '').replace(/[^0-9]/g, '');
+  const row = list[idx];
+  const defaultReason = row.cancelReason || 'Item out of stock for today';
+  const reason = prompt(`Reason for cancelling Order ${row.orderId}:\n(e.g., Dish out of stock, Outside delivery area, Customer cancelled)`, defaultReason);
 
-    if (confirm('Order status updated to Cancelled. Would you like to notify the customer on WhatsApp?')) {
-      let msg = `Namaste 🙏 Regarding your order (${row.orderId}) at TGS ChefChoice:\n\n`;
-      msg += `Regrettably, we are unable to fulfill your request at this time. Please contact us directly at 9701325292 for assistance. Thank you!`;
-      window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-    }
-  }
+  if (reason === null) return; // User clicked cancel on prompt
+
+  const cancelReasonStr = reason.trim() || 'Unspecified reason';
+  list[idx].status = 'Cancelled';
+  list[idx].cancelReason = cancelReasonStr;
+  saveRecords(activeTab, list);
+  renderDashboard();
+
+  const phone = (row.phone || '').replace(/[^0-9]/g, '');
+  let msg = `Namaste 🙏 Order Cancellation Update — TGS ChefChoice\n\n`;
+  msg += `Order ID: ${row.orderId}\n`;
+  msg += `Status: Cancelled ❌\n`;
+  msg += `Reason: ${cancelReasonStr}\n\n`;
+  msg += `We apologize for the inconvenience. For assistance, please call us directly at 9701325292. Thank you!`;
+
+  window.open(`https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`, '_blank');
 };
 
 // Printable Thermal Kitchen Ticket
@@ -754,7 +799,7 @@ function exportToCsv() {
   }
 
   let csvContent = 'data:text/csv;charset=utf-8,';
-  csvContent += 'Order ID,Date/Time,Customer Name,Phone,Order Type / Details,Address,Total Amount (INR),Status,Internal Notes\n';
+  csvContent += 'Order ID,Date/Time,Customer Name,Phone,Order Type / Details,Address,Total Amount (INR),Status,Cancellation Reason,Internal Notes\n';
 
   records.forEach(r => {
     const itemsStr = r.items ? r.items.map(i => `${i.qty}x ${i.name}`).join(' | ') : (r.occasion || 'Booking');
@@ -767,6 +812,7 @@ function exportToCsv() {
       `"${(r.address || '').replace(/"/g, '""')}"`,
       r.totalAmount || 0,
       `"${r.status || 'Pending'}"`,
+      `"${(r.cancelReason || '').replace(/"/g, '""')}"`,
       `"${(r.internalNotes || '').replace(/"/g, '""')}"`
     ];
     csvContent += row.join(',') + '\n';

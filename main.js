@@ -1036,7 +1036,7 @@ function initMenuCart() {
       gpsUrl,
       items: Object.entries(cart).map(([n, i]) => ({ name: n, qty: i.qty, price: i.price })),
       totalAmount: total,
-      status: 'Pending'
+      status: 'Awaiting WA'
     });
 
     const encoded = encodeURIComponent(msg);
