@@ -295,6 +295,28 @@ function generateOrderId() {
   return `TGS-${yy}${mm}${dd}-${rand}`;
 }
 
+/** Saves an order / booking record to LocalStorage for the Admin Panel */
+function saveAdminRecord(category, record) {
+  const storageKey = `tgs_admin_${category}_orders`;
+  let list = [];
+  try {
+    const raw = localStorage.getItem(storageKey);
+    if (raw) list = JSON.parse(raw);
+  } catch (e) {
+    console.error('Error reading admin storage:', e);
+  }
+
+  record.timestamp = new Date().toISOString();
+  record.status = record.status || 'Pending';
+  list.unshift(record);
+
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(list));
+  } catch (e) {
+    console.error('Error writing admin storage:', e);
+  }
+}
+
 /** Shared WhatsApp SVG icon string */
 const WA_SVG = `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M16 2C8.28 2 2 8.28 2 16c0 2.42.65 4.7 1.78 6.67L2 30l7.56-1.74C11.38 29.36 13.64 30 16 30c7.72 0 14-6.28 14-14S23.72 2 16 2zm7.3 19.76c-.3.85-1.78 1.62-2.43 1.72-.64.1-1.44.14-2.33-.15-.54-.18-1.23-.42-2.1-.82-3.7-1.6-6.12-5.37-6.31-5.62-.18-.24-1.5-2-.1-3.7.6-.72 1.34-1.07 1.77-1.07.14 0 .26 0 .37.01.34.01.52.03.74.6.25.66.87 2.3.94 2.47.08.17.13.37.03.6-.1.22-.15.36-.3.55-.14.18-.3.4-.43.54-.14.14-.29.3-.12.59.17.28.75 1.24 1.61 2 1.1.99 2.03 1.3 2.33 1.44.3.14.47.12.64-.07.18-.19.76-.89.96-1.2.2-.3.4-.25.67-.15.28.1 1.78.84 2.08.99.3.15.5.22.58.34.07.12.07.7-.23 1.54z"/></svg>`;
 
@@ -392,6 +414,20 @@ function initOrderFormValidation() {
     if (notes) msg += `*Notes:* ${notes}\n`;
     msg += `\n_Sent via tgs-chef-choice.vercel.app_`;
 
+    saveAdminRecord('table', {
+      orderId,
+      name,
+      phone,
+      date,
+      time,
+      guests,
+      service: service === 'dinein' ? 'Dine-In Table' : 'Takeaway Counter',
+      occasion: occasion || 'General Dining',
+      notes,
+      totalAmount: 1000,
+      status: 'Pending'
+    });
+
     submitBtn.textContent = '⏳ Opening WhatsApp...';
     submitBtn.disabled = true;
 
@@ -454,6 +490,17 @@ function initEventFormValidation() {
     msg += `*Occasion / Size:* ${occasion}\n`;
     if (notes) msg += `*Additional Notes:* ${notes}\n`;
     msg += `\n_Sent via tgs-chef-choice.vercel.app_`;
+
+    saveAdminRecord('event', {
+      orderId,
+      name,
+      phone,
+      date,
+      occasion,
+      notes,
+      totalAmount: 5000,
+      status: 'Pending'
+    });
 
     const successP = form.querySelector('.form-success');
     if (successP) {
@@ -978,6 +1025,19 @@ function initMenuCart() {
     msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
     msg += `_Order placed via tgs-chef-choice.vercel.app_`;
+
+    // Save record to Admin Dashboard LocalStorage BEFORE opening WhatsApp
+    saveAdminRecord('food', {
+      orderId,
+      name,
+      phone,
+      orderType,
+      address: address || (orderType === 'takeaway' ? 'Takeaway Counter Pickup' : 'Dine-In Table'),
+      gpsUrl,
+      items: Object.entries(cart).map(([n, i]) => ({ name: n, qty: i.qty, price: i.price })),
+      totalAmount: total,
+      status: 'Pending'
+    });
 
     const encoded = encodeURIComponent(msg);
     window.open(`https://wa.me/919701325292?text=${encoded}`, '_blank');

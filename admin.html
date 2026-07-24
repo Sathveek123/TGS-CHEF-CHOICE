@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — TGS ChefChoice Kasibugga</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Chart.js for Live Analytics Graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="admin-layout">
+
+  <!-- Shared Sidebar Navigation -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__header">
+      <img src="assets/tgs-circular.png" alt="TGS Logo" style="width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--saffron-border);">
+      <div class="admin-sidebar__brand">
+        <h2>TGS ChefChoice</h2>
+        <span>Owner Admin Portal</span>
+      </div>
+    </div>
+
+    <nav class="admin-sidebar__nav">
+      <a class="admin-nav__item active" data-tab="food">
+        <span>🛒</span> Food Orders
+      </a>
+      <a class="admin-nav__item" data-tab="table">
+        <span>🪑</span> Table Bookings
+      </a>
+      <a class="admin-nav__item" data-tab="event">
+        <span>🎉</span> Event Bookings
+      </a>
+      <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.08); margin: 12px 0;">
+      <a href="./" class="admin-nav__item" style="color: #64748B;">
+        <span>🌐</span> View Live Website
+      </a>
+    </nav>
+
+    <div class="admin-sidebar__footer">
+      <div style="font-weight: 700; color: #E2E8F0; margin-bottom: 2px;">Owners Console</div>
+      <div>Tarakeswari &amp; Balakrishna Gujju</div>
+      <div style="font-size: 0.75rem; color: #475569; margin-top: 6px;">Kasibugga, AP 532222</div>
+    </div>
+  </aside>
+
+  <!-- Main Workspace Area -->
+  <main class="admin-main">
+    
+    <!-- Top Header -->
+    <header class="admin-header">
+      <div>
+        <h1 class="admin-header__title" id="tabTitle">🛒 Food Orders Dashboard</h1>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;" id="tabSubtitle">Real-time order tracking, customer details, analytics, and status management.</p>
+      </div>
+
+      <div class="admin-header__controls">
+        <input type="text" id="adminSearchInput" class="admin-search-input" placeholder="🔍 Search Order ID, Name, Phone...">
+        <button id="addTestOrderBtn" class="btn btn--ghost" style="padding: 10px 16px; font-size: 0.85rem; border: 1.5px solid #CBD5E1; color: var(--text-dark);">
+          ➕ Add Test Order
+        </button>
+        <button id="refreshAdminBtn" class="btn btn--gold" style="padding: 10px 18px; font-size: 0.85rem;">
+          🔄 Refresh Data
+        </button>
+      </div>
+    </header>
+
+    <!-- Part 1: Analytics Summary Section -->
+    <section class="admin-stats-grid">
+      <div class="admin-stat-card">
+        <span class="admin-stat__label">Total Orders / Bookings</span>
+        <div class="admin-stat__value" id="statTotalCount">0</div>
+        <span class="admin-stat__change" style="color: #10B981;">↑ Live Database Count</span>
+      </div>
+
+      <div class="admin-stat-card">
+        <span class="admin-stat__label">Revenue Collected</span>
+        <div class="admin-stat__value" id="statRevenue" style="color: var(--saffron-gold);">₹0</div>
+        <span class="admin-stat__change" style="color: #10B981;">✓ Confirmed Orders Sum</span>
+      </div>
+
+      <div class="admin-stat-card">
+        <span class="admin-stat__label">Pending Action</span>
+        <div class="admin-stat__value" id="statPending" style="color: #D97706;">0</div>
+        <span class="admin-stat__change" style="color: #D97706;">⏳ Awaiting Confirmation</span>
+      </div>
+
+      <div class="admin-stat-card">
+        <span class="admin-stat__label">Cancelled / Failed</span>
+        <div class="admin-stat__value" id="statCancelled" style="color: #EF4444;">0</div>
+        <span class="admin-stat__change" style="color: #94A3B8;">• Declined Requests</span>
+      </div>
+    </section>
+
+    <!-- Interactive Analytics Chart -->
+    <section class="admin-chart-card">
+      <div class="admin-chart__header">
+        <h3 class="admin-chart__title" id="chartTitle">📊 Sales &amp; Order Volume Trend Analysis (Last 7 Days)</h3>
+        <span style="font-size: 0.82rem; font-weight: 700; color: var(--saffron-gold); background: #FFF8EE; padding: 4px 10px; border-radius: 12px; border: 1px solid var(--saffron-border);">
+          Live Analytics Engine
+        </span>
+      </div>
+      <div style="height: 260px; position: relative;">
+        <canvas id="adminChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Part 2: Orders Table -->
+    <section class="admin-table-card">
+      <div class="admin-table__header">
+        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; margin: 0; color: var(--text-dark);" id="tableCardTitle">📋 Recent Food Orders</h3>
+        <span style="font-size: 0.82rem; color: var(--text-muted);" id="tableCountText">Showing 0 records</span>
+      </div>
+
+      <div class="admin-table-container">
+        <table class="admin-orders-table">
+          <thead id="adminTableHead">
+            <!-- Populated dynamically via JS -->
+          </thead>
+          <tbody id="adminTableBody">
+            <!-- Populated dynamically via JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Dynamic UPI QR Code Modal -->
+<div class="cart-modal" id="qrModal">
+  <div class="cart-modal__panel" style="text-align: center; max-width: 420px;">
+    <div class="cart-modal__header">
+      <h3 class="cart-modal__title">📱 Customer UPI Payment QR</h3>
+      <button class="cart-modal__close" id="closeQrModal">✕</button>
+    </div>
+    
+    <div style="padding: 16px 0;">
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">Scan using PhonePe, Google Pay, Paytm, or BHIM to pay TGS ChefChoice.</p>
+      
+      <div style="background: #FFFFFF; padding: 16px; border: 2px solid var(--saffron-border); border-radius: 16px; display: inline-block; box-shadow: var(--shadow-md);">
+        <img id="qrImage" src="" alt="UPI Payment QR Code" style="width: 220px; height: 220px; display: block; margin: 0 auto;">
+      </div>
+
+      <div style="margin-top: 14px; font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; color: var(--saffron-gold);" id="qrAmount">
+        ₹0
+      </div>
+      <p style="font-size: 0.8rem; color: #64748B; margin-top: 4px;">UPI ID: <strong>tgschefchoice@okicici</strong></p>
+    </div>
+
+    <button class="btn btn--gold" id="copyUpiLinkBtn" style="width: 100%; margin-top: 10px;">
+      🔗 Copy UPI Deep-Link
+    </button>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>
