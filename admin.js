@@ -370,6 +370,9 @@ function renderTable(list, customerCounts) {
   const bodyEl = document.getElementById('adminTableBody');
   if (!headEl || !bodyEl) return;
 
+  const tableContainer = document.querySelector('.admin-table-container');
+  if (tableContainer) tableContainer.scrollLeft = 0;
+
   bodyEl.innerHTML = '';
 
   if (activeTab === 'food') {

@@ -2524,9 +2524,10 @@ button, a, select, input, label {
 
 .admin-main {
   flex: 1;
-  padding: 24px 28px;
+  width: calc(100% - 270px);
+  padding: 24px 32px;
   overflow-y: auto;
-  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Order Type Badges */
@@ -2707,6 +2708,8 @@ button, a, select, input, label {
   border: 1px solid #E2E8F0;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
   overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .admin-table__header {
@@ -2716,14 +2719,19 @@ button, a, select, input, label {
   align-items: center;
   justify-content: space-between;
   background: #FFF8EE;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .admin-table-container {
+  width: 100%;
   overflow-x: auto;
+  box-sizing: border-box;
 }
 
 .admin-orders-table {
   width: 100%;
+  min-width: 100%;
   border-collapse: collapse;
   text-align: left;
   font-size: 0.9rem;
