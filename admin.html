@@ -76,6 +76,9 @@
         <button id="exportCsvBtn" class="btn btn--ghost" style="padding: 10px 14px; font-size: 0.85rem; border: 1.5px solid #CBD5E1; color: var(--text-dark);">
           📥 Export CSV
         </button>
+        <button id="pasteWaOrderBtn" class="btn btn--gold" style="padding: 10px 14px; font-size: 0.85rem;">
+          📋 Paste WhatsApp Order
+        </button>
         <button id="clearAdminBtn" class="btn btn--ghost" style="padding: 10px 14px; font-size: 0.85rem; border: 1.5px solid #CBD5E1; color: #EF4444;">
           🗑️ Clear Data
         </button>
@@ -177,6 +180,28 @@
 
     <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #E2E8F0; display: flex; gap: 10px; flex-wrap: wrap;" id="detailModalActions">
       <!-- Action buttons -->
+    </div>
+  </div>
+</div>
+
+<!-- Paste WhatsApp Order Modal -->
+<div class="cart-modal" id="pasteWaModal">
+  <div class="cart-modal__panel" style="max-width: 520px; text-align: left;">
+    <div class="cart-modal__header">
+      <h3 class="cart-modal__title">📋 Import / Paste WhatsApp Order</h3>
+      <button class="cart-modal__close" id="closePasteWaModal">✕</button>
+    </div>
+    
+    <div style="padding: 16px 0;">
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">
+        Received an order message on WhatsApp? Paste the full order text here and click <strong>Import Order</strong> to automatically parse customer details, items, address, and total into the Admin Panel!
+      </p>
+      
+      <textarea id="waOrderTextInput" style="width: 100%; height: 160px; padding: 12px; border: 1.5px solid #CBD5E1; border-radius: 10px; font-family: monospace; font-size: 0.85rem; outline: none;" placeholder="Paste the WhatsApp order text here (e.g. *NEW ORDER — TGS CHEFCHOICE* ... Order ID: TGS-260725-5521 ...)"></textarea>
+
+      <button class="btn btn--gold" id="parseWaOrderBtn" style="width: 100%; margin-top: 12px;">
+        ✨ Import Order to Admin Table
+      </button>
     </div>
   </div>
 </div>

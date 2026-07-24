@@ -1,12 +1,11 @@
 /* ============================================================
-   TGS CHEFCHOICE — Admin Dashboard Interactive Logic (v2.0)
+   TGS CHEFCHOICE — Admin Dashboard Interactive Logic (v2.1)
    Includes: Multi-filtering, CSV export, Order Detail modal, 
    Internal Notes, Top Selling Dishes widget, Regular customer tags,
-   and Printable Kitchen Slips.
+   Printable Kitchen Slips, and WhatsApp Order Importer/Parser.
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
-  purgeOldDummyData();
   setupTabNavigation();
   setupFilters();
   setupButtons();
@@ -17,17 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // Current active tab state: 'food' | 'table' | 'event'
 let activeTab = 'food';
 let chartInstance = null;
-
-// Purge any previously seeded dummy/fake sample data from LocalStorage
-function purgeOldDummyData() {
-  ['food', 'table', 'event'].forEach(tab => {
-    const key = `tgs_admin_${tab}_orders`;
-    const data = localStorage.getItem(key);
-    if (data && (data.includes('TGS-260724-5521') || data.includes('TGS-TBL-701') || data.includes('TGS-EVT-901') || data.includes('TGS-TEST-'))) {
-      localStorage.removeItem(key);
-    }
-  });
-}
 
 // Tab Switching
 function setupTabNavigation() {
@@ -63,6 +51,11 @@ function setupButtons() {
       localStorage.removeItem(`tgs_admin_${activeTab}_orders`);
       renderDashboard();
     }
+  });
+
+  document.getElementById('pasteWaOrderBtn')?.addEventListener('click', () => {
+    const modal = document.getElementById('pasteWaModal');
+    if (modal) modal.classList.add('open');
   });
 }
 
@@ -208,7 +201,6 @@ function renderChart(data, range) {
     });
 
   } else {
-    // Default 7 Days or Month View
     const numDays = range === 'month' ? 30 : 7;
     for (let i = numDays - 1; i >= 0; i--) {
       const d = new Date();
@@ -414,7 +406,7 @@ function renderTable(list, customerCounts) {
         <td><a href="tel:${row.phone}" style="color:var(--saffron-gold); font-weight:700;">${row.phone}</a></td>
         <td><span style="background:#FFF8EE; border:1px solid var(--saffron-border); padding:3px 8px; border-radius:12px; font-weight:700;">${escapeHtml(row.guests || '2 Guests')}</span></td>
         <td>${row.date} @ ${row.time || '19:30'}</td>
-        <td style="font-size:0.85rem; color:#475569;">${escapeHtml(row.occasion || 'General Dining')}</td>
+        <td><span style="font-size:0.85rem; color:#475569;">${escapeHtml(row.occasion || 'General Dining')}</span></td>
         <td style="font-weight:800; color:var(--saffron-gold);">₹${row.totalAmount || 1000}</td>
         <td>${statusBadge}</td>
         <td>
@@ -484,11 +476,35 @@ function getStatusBadgeHtml(status) {
   }
 }
 
-// Full Order Detail Modal Logic
+// Full Order Detail Modal & Modals Setup
 function setupModals() {
   const detailModal = document.getElementById('orderDetailModal');
   const closeDetailBtn = document.getElementById('closeDetailModal');
   closeDetailBtn?.addEventListener('click', () => detailModal?.classList.remove('open'));
+
+  const pasteWaModal = document.getElementById('pasteWaModal');
+  const closePasteWaBtn = document.getElementById('closePasteWaModal');
+  closePasteWaBtn?.addEventListener('click', () => pasteWaModal?.classList.remove('open'));
+
+  const parseWaBtn = document.getElementById('parseWaOrderBtn');
+  parseWaBtn?.addEventListener('click', () => {
+    const text = document.getElementById('waOrderTextInput')?.value.trim();
+    if (!text) {
+      alert('Please paste the WhatsApp order text first.');
+      return;
+    }
+
+    const orderObj = parseWhatsAppOrderText(text);
+    if (orderObj) {
+      const list = getRecords('food');
+      list.unshift(orderObj);
+      saveRecords('food', list);
+      pasteWaModal?.classList.remove('open');
+      document.getElementById('waOrderTextInput').value = '';
+      alert(`✅ Order ${orderObj.orderId} imported successfully into Admin Panel!`);
+      renderDashboard();
+    }
+  });
 
   const qrModal = document.getElementById('qrModal');
   const closeQrBtn = document.getElementById('closeQrModal');
@@ -503,6 +519,52 @@ function setupModals() {
     copyBtn.textContent = '✅ UPI Link Copied!';
     setTimeout(() => copyBtn.textContent = '🔗 Copy UPI Deep-Link', 2000);
   });
+}
+
+// WhatsApp Order Text Parser
+function parseWhatsAppOrderText(text) {
+  if (!text || !text.trim()) return null;
+
+  const idMatch = text.match(/(?:Order ID|Ref ID):\*?\s*([A-Za-z0-9\-]+)/i);
+  const nameMatch = text.match(/(?:Customer Name|Name):\*?\s*([^\n]+)/i);
+  const phoneMatch = text.match(/(?:Phone Number|Phone):\*?\s*([^\n]+)/i);
+  const addressMatch = text.match(/(?:Delivery Address|Address):\*?\s*\n?([^\n]+)/i);
+  const gpsMatch = text.match(/(https:\/\/maps\.google\.com[^\s\n]+)/i);
+  const totalMatch = text.match(/TOTAL AMOUNT:\s*₹?\s*(\d+)/i) || text.match(/Total Amount:\s*₹?\s*(\d+)/i) || text.match(/Total:\s*₹?\s*(\d+)/i);
+
+  const orderId = idMatch ? idMatch[1].trim() : ('TGS-WA-' + Math.floor(1000 + Math.random() * 9000));
+  const name = nameMatch ? nameMatch[1].replace(/\*/g, '').trim() : 'WhatsApp Customer';
+  const phone = phoneMatch ? phoneMatch[1].replace(/[^0-9]/g, '') : '9701325292';
+  const address = addressMatch ? addressMatch[1].replace(/\*/g, '').trim() : 'WhatsApp Direct Order';
+  const gpsUrl = gpsMatch ? gpsMatch[1].trim() : '';
+  const totalAmount = totalMatch ? parseInt(totalMatch[1], 10) : 0;
+
+  // Extract items
+  const items = [];
+  const lines = text.split('\n');
+  lines.forEach(line => {
+    const itemMatch = line.match(/[•\-*]\s*(\d+)\s*[x×]\s*([^—\-\n]+)(?:[—\-]\s*₹?\s*(\d+))?/i);
+    if (itemMatch) {
+      const qty = parseInt(itemMatch[1], 10) || 1;
+      const itemName = itemMatch[2].trim();
+      const itemPriceStr = itemMatch[3];
+      const price = itemPriceStr ? Math.round(parseInt(itemPriceStr, 10) / qty) : 200;
+      items.push({ name: itemName, qty, price });
+    }
+  });
+
+  return {
+    orderId,
+    name,
+    phone,
+    orderType: text.includes('DELIVERY') ? 'delivery' : (text.includes('TAKEAWAY') ? 'takeaway' : 'dinein'),
+    address,
+    gpsUrl,
+    items: items.length ? items : [{ name: 'WhatsApp Special Order', qty: 1, price: totalAmount || 300 }],
+    totalAmount: totalAmount || (items.reduce((s, i) => s + (i.qty * i.price), 0)) || 500,
+    status: 'Pending',
+    timestamp: new Date().toISOString()
+  };
 }
 
 window.openDetailModal = function(orderId) {
