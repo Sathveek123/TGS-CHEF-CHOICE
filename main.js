@@ -71,9 +71,10 @@ function initScrollReveal() {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
+        io.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.15 });
+  }, { threshold: 0.1 });
 
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 }
@@ -118,11 +119,18 @@ function initScrollProgress() {
   const progressBar = document.querySelector('.scroll-progress');
   if (!progressBar) return;
 
+  let ticking = false;
   window.addEventListener('scroll', () => {
-    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-    if (totalHeight > 0) {
-      const progress = (window.scrollY / totalHeight) * 100;
-      progressBar.style.width = `${progress}%`;
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        if (totalHeight > 0) {
+          const progress = (window.scrollY / totalHeight) * 100;
+          progressBar.style.width = `${progress}%`;
+        }
+        ticking = false;
+      });
+      ticking = true;
     }
   }, { passive: true });
 }
@@ -818,7 +826,7 @@ function initMenuCart() {
     if (gpsStatusText) gpsStatusText.textContent = '⏳ Detecting location...';
 
     navigator.geolocation.getCurrentPosition(
-      pos => {
+      async pos => {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
         const customerPinUrl = `https://maps.google.com/?q=${lat.toFixed(5)},${lng.toFixed(5)}`;
@@ -828,7 +836,24 @@ function initMenuCart() {
         if (cartGpsUrl) cartGpsUrl.value = customerPinUrl;
         window.tgsRouteUrl = routeFromTgsUrl;
 
-        if (cartAddress) {
+        try {
+          if (gpsStatusText) gpsStatusText.textContent = '📍 Resolving street address...';
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
+            headers: { 'Accept-Language': 'en-US,en;q=0.9' }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.display_name) {
+              if (cartAddress) cartAddress.value = data.display_name;
+              if (gpsStatusText) gpsStatusText.textContent = '✅ Location & Address Detected!';
+              return;
+            }
+          }
+        } catch (err) {
+          console.warn('Reverse geocoding error:', err);
+        }
+
+        if (cartAddress && !cartAddress.value) {
           cartAddress.value = `📍 Current GPS Coords: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
         }
         if (gpsStatusText) gpsStatusText.textContent = '✅ Location Detected!';
@@ -848,7 +873,8 @@ function initMenuCart() {
 
       const val = radio.value;
       if (deliveryAddressBlock) {
-        deliveryAddressBlock.style.display = (val === 'delivery' || val === 'takeaway') ? 'block' : 'none';
+        // Delivery Address & GPS Block ONLY required for Delivery! Dine-In & Takeaway do not ask for delivery address!
+        deliveryAddressBlock.style.display = (val === 'delivery') ? 'block' : 'none';
       }
     });
   });
@@ -864,6 +890,13 @@ function initMenuCart() {
       modalList.appendChild(li);
     });
     modalTotal.innerHTML = `Total: <span>₹${total}</span>`;
+
+    // Sync delivery address block visibility based on selected order type
+    const selectedType = document.querySelector('input[name="cartOrderType"]:checked')?.value || 'dinein';
+    if (deliveryAddressBlock) {
+      deliveryAddressBlock.style.display = (selectedType === 'delivery') ? 'block' : 'none';
+    }
+
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
   });
@@ -893,33 +926,58 @@ function initMenuCart() {
     const gpsUrl    = cartGpsUrl?.value || '';
     const orderId   = generateOrderId();
 
-    let msg = `*New Order — TGS ChefChoice* 🛒\n\n`;
-    msg += `*Order ID:* ${orderId}\n`;
+    let msg = `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+    msg += `📋 *NEW ORDER — TGS CHEFCHOICE*\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+    msg += `🆔 *Order ID:* ${orderId}\n\n`;
     if (window.tgsTableNumber) {
-      msg += `*Table:* Table ${window.tgsTableNumber}\n`;
+      msg += `🪑 *Table Number:* Table ${window.tgsTableNumber}\n\n`;
     }
-    msg += `*Name:* ${name}\n`;
-    msg += `*Phone:* ${phone}\n`;
-    msg += `*Order Type:* ${orderType === 'dinein' ? '🪑 Dine-In' : (orderType === 'delivery' ? '🏠 Home Delivery' : '🥡 Takeaway')}\n`;
+    msg += `👤 *Customer Name:* ${name}\n\n`;
+    msg += `📞 *Phone Number:* ${phone}\n\n`;
 
-    if (orderType !== 'dinein' && address) {
-      msg += `*Delivery Address:* ${address}\n`;
-    }
-    if (gpsUrl) {
-      msg += `*Customer GPS Pin:* ${gpsUrl}\n`;
-      if (window.tgsRouteUrl) {
-        msg += `*🚗 Driving Route from TGS:* ${window.tgsRouteUrl}\n`;
+    const typeLabel = orderType === 'dinein' 
+      ? '🪑 DINE-IN TABLE' 
+      : (orderType === 'delivery' ? '🏠 HOME DELIVERY' : '🥡 TAKEAWAY COUNTER');
+    msg += `🚲 *Order Type:* ${typeLabel}\n\n`;
+
+    if (orderType === 'delivery') {
+      msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `📍 *DELIVERY LOCATION DETAILS*\n`;
+      msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+      if (address) {
+        msg += `🏡 *Delivery Address:*\n${address}\n\n`;
       }
+      if (gpsUrl) {
+        msg += `📍 *Customer GPS Pin:*\n${gpsUrl}\n\n`;
+      }
+      if (window.tgsRouteUrl) {
+        msg += `🚗 *Driving Route from TGS:*\n${window.tgsRouteUrl}\n\n`;
+      }
+    } else if (orderType === 'takeaway') {
+      msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+      msg += `🥡 *TAKEAWAY PARCEL INFO*\n`;
+      msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+      msg += `ℹ️ Customer will pick up parcel directly at TGS Counter.\n\n`;
     }
 
-    msg += `\n*Items Ordered:*\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+    msg += `🍲 *ITEMS ORDERED*\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
     let total = 0;
     Object.entries(cart).forEach(([itemName, item]) => {
-      msg += `• ${item.qty} × ${itemName} — ₹${item.qty * item.price}\n`;
+      msg += `• ${item.qty} × ${itemName} — ₹${item.qty * item.price}\n\n`;
       total += item.qty * item.price;
     });
-    msg += `\n*Total Amount: ₹${total}*\n\n_Sent via tgs-chef-choice.vercel.app_`;
+
+    msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+    msg += `💰 *TOTAL AMOUNT: ₹${total}*\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+    msg += `_Order placed via tgs-chef-choice.vercel.app_`;
 
     const encoded = encodeURIComponent(msg);
     window.open(`https://wa.me/919701325292?text=${encoded}`, '_blank');
@@ -957,9 +1015,12 @@ function initPackageWAButtons() {
 
 /* ---------------- Floating Culinary Ingredients background ---------------- */
 function initFloatingIngredients() {
+  // Disable floating elements on mobile viewports for 60fps fast performance
+  if (window.innerWidth < 768) return;
+
   const container = document.createElement('div');
   container.className = 'floating-bg-container';
-  container.style.cssText = 'position:fixed; inset:0; pointer-events:none; z-index:950; overflow:hidden;';
+  container.style.cssText = 'position:fixed; inset:0; pointer-events:none; z-index:950; overflow:hidden; transform:translateZ(0);';
 
   // Detailed SVG outlines for Palasa cashews, chili, leaf, chef hat
   const cashewPath = "M12 3a7 7 0 0 0-7 7c0 4 3 6.5 5 8s4 2.5 6.5 2.5c2 0 4-1.5 4-3.5s.5-4-1-5.5-3.5-2-5.5-2a4 4 0 0 1-1.5-3c0-2 1.5-3.5 3.5-3.5";
@@ -974,13 +1035,15 @@ function initFloatingIngredients() {
     { path: hatPath,    label: 'hat' }
   ];
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 6; i++) {
     const icon = icons[i % icons.length];
     const el = document.createElement('div');
     el.className = `floating-bg-item float-anim-${(i % 3) + 1}`;
-    const size = Math.floor(Math.random() * 36) + 34;
+    const size = Math.floor(Math.random() * 28) + 28;
     el.style.width = `${size}px`;
     el.style.height = `${size}px`;
+    el.style.willChange = 'transform, opacity';
+    el.style.opacity = '0.12';
     if (i % 2 === 0) {
       el.style.left = `${Math.random() * 8 + 1}vw`;
     } else {

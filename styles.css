@@ -65,14 +65,15 @@ body {
   background-color: #FAF9F5;
   background-image: 
     radial-gradient(circle at 10% 20%, rgba(217, 119, 6, 0.03) 0%, transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(217, 119, 6, 0.02) 0%, transparent 50%),
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.02'/%3E%3C/svg%3E");
-  background-attachment: fixed;
+    radial-gradient(circle at 90% 80%, rgba(217, 119, 6, 0.02) 0%, transparent 50%);
+  background-attachment: scroll;
   color: var(--text-body);
   font-family: var(--font-body);
   font-size: 15px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
 img, video {
@@ -135,12 +136,13 @@ button { cursor: pointer; }
 /* ── Scroll Reveal Animation ── */
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+  transform: translate3d(0, 20px, 0);
+  will-change: opacity, transform;
+  transition: opacity 0.45s var(--ease-out), transform 0.45s var(--ease-out);
 }
 .reveal.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translate3d(0, 0, 0);
 }
 
 /* ── Lightbox: support both .open and .active class ── */
@@ -162,18 +164,7 @@ button { cursor: pointer; }
   z-index: 9999;
   width: 0%;
   transition: width 0.1s linear;
-}
-
-/* Motion Reveal */
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
+  will-change: width;
 }
 
 .hover-lift {
