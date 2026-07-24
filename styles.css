@@ -2731,26 +2731,38 @@ button, a, select, input, label {
 
 .admin-orders-table {
   width: 100%;
-  min-width: 100%;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  table-layout: fixed;
 }
 
 .admin-orders-table th {
   background: #F8FAFC;
   color: var(--text-dark);
   font-weight: 700;
-  padding: 14px 18px;
+  padding: 12px 14px;
   border-bottom: 2px solid #E2E8F0;
   white-space: nowrap;
 }
 
 .admin-orders-table td {
-  padding: 14px 18px;
+  padding: 12px 14px;
   border-bottom: 1px solid #E2E8F0;
   vertical-align: middle;
+  word-wrap: break-word;
+  word-break: break-word;
 }
+
+.admin-orders-table th:nth-child(1) { width: 10%; white-space: nowrap; }
+.admin-orders-table th:nth-child(2) { width: 10%; }
+.admin-orders-table th:nth-child(3) { width: 14%; }
+.admin-orders-table th:nth-child(4) { width: 11%; }
+.admin-orders-table th:nth-child(5) { width: 12%; }
+.admin-orders-table th:nth-child(6) { width: 21%; }
+.admin-orders-table th:nth-child(7) { width: 7%; }
+.admin-orders-table th:nth-child(8) { width: 9%; }
+.admin-orders-table th:nth-child(9) { width: 16%; }
 
 .admin-orders-table tr:hover {
   background: #FFFBF5;

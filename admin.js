@@ -410,7 +410,7 @@ function renderTable(list, customerCounts) {
       const statusBadge = getStatusBadgeHtml(row.status);
 
       tr.innerHTML = `
-        <td style="font-weight:700; color:var(--text-dark);" onclick="openDetailModal('${row.orderId}')">${row.orderId}</td>
+        <td style="font-weight:700; color:var(--text-dark); white-space:nowrap;" onclick="openDetailModal('${row.orderId}')">${row.orderId}</td>
         <td>${typeBadge}</td>
         <td style="font-weight:600;" onclick="openDetailModal('${row.orderId}')">${escapeHtml(row.name)} ${regularTag}</td>
         <td><a href="tel:${row.phone}" style="color:var(--saffron-gold); font-weight:700;">${row.phone}</a></td>
