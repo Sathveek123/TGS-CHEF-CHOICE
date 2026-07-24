@@ -3,7 +3,7 @@
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
-  initSampleDataIfEmpty();
+  purgeOldDummyData();
   setupTabNavigation();
   setupSearchFilter();
   setupRefreshAndTestBtns();
@@ -15,135 +15,15 @@ document.addEventListener('DOMContentLoaded', () => {
 let activeTab = 'food';
 let chartInstance = null;
 
-// Initial Sample Data Seeding
-function initSampleDataIfEmpty() {
-  if (!localStorage.getItem('tgs_admin_food_orders')) {
-    const sampleFood = [
-      {
-        orderId: 'TGS-260724-5521',
-        name: 'NALLA SATVIK',
-        phone: '9441782469',
-        orderType: 'delivery',
-        address: 'Labour Colony, near Manikamma Temple, Palasa, AP – 532221',
-        gpsUrl: 'https://maps.google.com/?q=18.4501,83.6549',
-        items: [
-          { name: 'Hyd Chicken Dum Biryani', qty: 4, price: 200 },
-          { name: 'Chicken Kabob Biryani (2pc)', qty: 1, price: 220 }
-        ],
-        totalAmount: 1020,
-        status: 'Pending',
-        timestamp: new Date(Date.now() - 3600000 * 2).toISOString()
-      },
-      {
-        orderId: 'TGS-260724-4190',
-        name: 'Harish Tangudu',
-        phone: '9701325292',
-        orderType: 'delivery',
-        address: 'Shivaji Nagar, Kasibugga, Srikakulam, AP – 532222',
-        gpsUrl: 'https://maps.google.com/?q=18.7693,84.4206',
-        items: [
-          { name: 'TGS Special Chicken Biryani', qty: 2, price: 280 },
-          { name: 'Deluxe Veg Pizza', qty: 1, price: 220 }
-        ],
-        totalAmount: 780,
-        status: 'Confirmed',
-        timestamp: new Date(Date.now() - 3600000 * 5).toISOString()
-      },
-      {
-        orderId: 'TGS-260724-3012',
-        name: 'K. Gayatri',
-        phone: '9848012345',
-        orderType: 'dinein',
-        address: 'Dine-In Table 4',
-        gpsUrl: '',
-        items: [
-          { name: 'Paneer Butter Masala', qty: 2, price: 180 },
-          { name: 'Butter Naan', qty: 6, price: 30 }
-        ],
-        totalAmount: 540,
-        status: 'Confirmed',
-        timestamp: new Date(Date.now() - 3600000 * 24).toISOString()
-      },
-      {
-        orderId: 'TGS-260724-1189',
-        name: 'V. Ramana',
-        phone: '9177223344',
-        orderType: 'takeaway',
-        address: 'Takeaway Counter Pickup',
-        gpsUrl: '',
-        items: [
-          { name: 'Prawns Fry Biryani', qty: 1, price: 300 },
-          { name: 'Fresh Lime Soda', qty: 2, price: 40 }
-        ],
-        totalAmount: 380,
-        status: 'Cancelled',
-        timestamp: new Date(Date.now() - 3600000 * 30).toISOString()
-      }
-    ];
-    localStorage.setItem('tgs_admin_food_orders', JSON.stringify(sampleFood));
-  }
-
-  if (!localStorage.getItem('tgs_admin_table_orders')) {
-    const sampleTable = [
-      {
-        orderId: 'TGS-TBL-701',
-        name: 'Suresh Patnaik',
-        phone: '9949112233',
-        date: '2026-07-25',
-        time: '19:30',
-        guests: '6 Guests',
-        service: 'Dine-In Table',
-        occasion: 'Birthday Celebration',
-        notes: 'Needs high chair for kid',
-        totalAmount: 1500,
-        status: 'Confirmed',
-        timestamp: new Date(Date.now() - 3600000 * 10).toISOString()
-      },
-      {
-        orderId: 'TGS-TBL-702',
-        name: 'M. Anusha',
-        phone: '9490123456',
-        date: '2026-07-25',
-        time: '20:00',
-        guests: '4 Guests',
-        service: 'Dine-In Table',
-        occasion: 'Family Dinner',
-        notes: 'Prefers quiet corner booth',
-        totalAmount: 1000,
-        status: 'Pending',
-        timestamp: new Date(Date.now() - 3600000 * 3).toISOString()
-      }
-    ];
-    localStorage.setItem('tgs_admin_table_orders', JSON.stringify(sampleTable));
-  }
-
-  if (!localStorage.getItem('tgs_admin_event_orders')) {
-    const sampleEvent = [
-      {
-        orderId: 'TGS-EVT-901',
-        name: 'B. Srinivasa Rao',
-        phone: '9866112233',
-        date: '2026-08-10',
-        occasion: '50 Guests — Marriage Anniversary Buffet',
-        notes: 'Full live cooking counter for biryani & starters',
-        totalAmount: 15000,
-        status: 'Confirmed',
-        timestamp: new Date(Date.now() - 3600000 * 48).toISOString()
-      },
-      {
-        orderId: 'TGS-EVT-902',
-        name: 'K. Ramesh',
-        phone: '9440987654',
-        date: '2026-08-15',
-        occasion: '25 Guests — Housewarming Catering',
-        notes: 'Veg options priority',
-        totalAmount: 7500,
-        status: 'Pending',
-        timestamp: new Date(Date.now() - 3600000 * 12).toISOString()
-      }
-    ];
-    localStorage.setItem('tgs_admin_event_orders', JSON.stringify(sampleEvent));
-  }
+// Purge any previously seeded dummy/fake sample data from LocalStorage
+function purgeOldDummyData() {
+  ['food', 'table', 'event'].forEach(tab => {
+    const key = `tgs_admin_${tab}_orders`;
+    const data = localStorage.getItem(key);
+    if (data && (data.includes('TGS-260724-5521') || data.includes('TGS-TBL-701') || data.includes('TGS-EVT-901') || data.includes('TGS-TEST-'))) {
+      localStorage.removeItem(key);
+    }
+  });
 }
 
 // Tab Switching
@@ -167,62 +47,17 @@ function setupSearchFilter() {
   });
 }
 
-// Buttons (Refresh & Test Order)
+// Buttons (Refresh & Clear Admin Data)
 function setupRefreshAndTestBtns() {
   document.getElementById('refreshAdminBtn')?.addEventListener('click', () => {
     renderDashboard();
   });
 
-  document.getElementById('addTestOrderBtn')?.addEventListener('click', () => {
-    const newId = 'TGS-TEST-' + Math.floor(1000 + Math.random() * 9000);
-    if (activeTab === 'food') {
-      const records = getRecords('food');
-      records.unshift({
-        orderId: newId,
-        name: 'Test Customer ' + Math.floor(Math.random() * 100),
-        phone: '9876543210',
-        orderType: 'delivery',
-        address: 'Palasa Main Road, near RTC Complex',
-        gpsUrl: '',
-        items: [{ name: 'Hyd Chicken Dum Biryani', qty: 2, price: 200 }],
-        totalAmount: 400,
-        status: 'Pending',
-        timestamp: new Date().toISOString()
-      });
-      saveRecords('food', records);
-    } else if (activeTab === 'table') {
-      const records = getRecords('table');
-      records.unshift({
-        orderId: newId,
-        name: 'Test Guest ' + Math.floor(Math.random() * 100),
-        phone: '9876543210',
-        date: '2026-07-26',
-        time: '19:00',
-        guests: '4 Guests',
-        service: 'Dine-In Table',
-        occasion: 'Casual Dining',
-        notes: 'Test reservation',
-        totalAmount: 1000,
-        status: 'Pending',
-        timestamp: new Date().toISOString()
-      });
-      saveRecords('table', records);
-    } else {
-      const records = getRecords('event');
-      records.unshift({
-        orderId: newId,
-        name: 'Test Event Client',
-        phone: '9876543210',
-        date: '2026-08-20',
-        occasion: '20 Guests — Birthday Party',
-        notes: 'Outdoor catering setup',
-        totalAmount: 6000,
-        status: 'Pending',
-        timestamp: new Date().toISOString()
-      });
-      saveRecords('event', records);
+  document.getElementById('clearAdminBtn')?.addEventListener('click', () => {
+    if (confirm('Are you sure you want to clear all stored admin records for ' + activeTab.toUpperCase() + '?')) {
+      localStorage.removeItem(`tgs_admin_${activeTab}_orders`);
+      renderDashboard();
     }
-    renderDashboard();
   });
 }
 
