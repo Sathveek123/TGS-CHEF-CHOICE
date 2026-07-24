@@ -2734,27 +2734,24 @@ button, a, select, input, label {
 
 .admin-orders-table {
   width: 100%;
-  min-width: 900px;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.88rem;
+  font-size: 0.84rem;
 }
 
 .admin-orders-table th {
   background: #F8FAFC;
   color: var(--text-dark);
   font-weight: 700;
-  padding: 12px 14px;
+  padding: 10px 10px;
   border-bottom: 2px solid #E2E8F0;
   white-space: nowrap;
 }
 
 .admin-orders-table td {
-  padding: 12px 14px;
+  padding: 10px 10px;
   border-bottom: 1px solid #E2E8F0;
   vertical-align: middle;
-  word-wrap: break-word;
-  word-break: break-word;
 }
 
 .admin-orders-table th:nth-child(1) { width: 10%; white-space: nowrap; }
@@ -2780,6 +2777,7 @@ button, a, select, input, label {
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .status-pending {

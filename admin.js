@@ -419,10 +419,10 @@ function renderTable(list, customerCounts) {
         <td style="font-weight:800; color:var(--saffron-gold);">₹${row.totalAmount}</td>
         <td>${statusBadge}</td>
         <td>
-          <div style="display:flex; gap:5px; flex-wrap:wrap;">
-            <button onclick="confirmOrder('${row.orderId}')" style="background:#10B981; color:#FFF; border:none; padding:5px 9px; border-radius:6px; font-size:0.78rem; font-weight:700; cursor:pointer;">✅ Confirm</button>
-            <button onclick="openQrModal(${row.totalAmount})" style="background:#3B82F6; color:#FFF; border:none; padding:5px 9px; border-radius:6px; font-size:0.78rem; font-weight:700; cursor:pointer;">📱 QR</button>
-            <button onclick="cancelOrder('${row.orderId}')" style="background:#EF4444; color:#FFF; border:none; padding:5px 9px; border-radius:6px; font-size:0.78rem; font-weight:700; cursor:pointer;">❌ Cancel</button>
+          <div style="display:flex; gap:4px; white-space:nowrap;">
+            <button onclick="confirmOrder('${row.orderId}')" style="background:#10B981; color:#FFF; border:none; padding:5px 8px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">✅ Confirm</button>
+            <button onclick="openQrModal(${row.totalAmount})" style="background:#3B82F6; color:#FFF; border:none; padding:5px 8px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">📱 QR</button>
+            <button onclick="cancelOrder('${row.orderId}')" style="background:#EF4444; color:#FFF; border:none; padding:5px 8px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">❌ Cancel</button>
           </div>
         </td>
       `;
