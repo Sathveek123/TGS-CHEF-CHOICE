@@ -285,14 +285,13 @@ function initLightbox() {
    WHATSAPP ORDERING SYSTEM — Shared Helpers
    ============================================================ */
 
-/** Generates a short human-readable reference ID: TGS-YYMMDD-XXXX */
+/** Generates a sequential reference ID: TGS-3001, TGS-3002, TGS-3003... */
 function generateOrderId() {
-  const d = new Date();
-  const yy = d.getFullYear().toString().slice(-2);
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
-  const rand = Math.floor(1000 + Math.random() * 9000);
-  return `TGS-${yy}${mm}${dd}-${rand}`;
+  let seq = parseInt(localStorage.getItem('tgs_order_seq') || '3001', 10);
+  if (isNaN(seq) || seq < 3001) seq = 3001;
+  const orderId = `TGS-${seq}`;
+  localStorage.setItem('tgs_order_seq', (seq + 1).toString());
+  return orderId;
 }
 
 /** Saves an order / booking record to LocalStorage for the Admin Panel */

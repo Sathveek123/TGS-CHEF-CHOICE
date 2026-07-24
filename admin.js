@@ -1,7 +1,8 @@
 /* ============================================================
-   TGS CHEFCHOICE — Admin Dashboard Interactive Logic (v2.2)
-   Includes: Multi-filtering, CSV export, Order Detail modal with Back Button,
-   Internal Notes, Cancellation Reason Prompt + WA message, Predefined Confirm WA message,
+   TGS CHEFCHOICE — Admin Dashboard Interactive Logic (v2.3)
+   Includes: Multi-filtering, Order Type column, Sequential Order IDs (TGS-3001+),
+   Table Pagination (10 per page), Redesigned View Details UI with single Back button,
+   CSV export, Cancellation Reason prompt + WA alert, Predefined Confirm WA alert,
    Top Selling Dishes widget, Regular customer tags, Printable Kitchen Slips,
    and WhatsApp Order Importer/Parser.
    ============================================================ */
@@ -11,11 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
   setupFilters();
   setupButtons();
   setupModals();
+  setupPagination();
   renderDashboard();
 });
 
-// Current active tab state: 'food' | 'table' | 'event'
+// State
 let activeTab = 'food';
+let currentPage = 1;
+const itemsPerPage = 10;
 let chartInstance = null;
 
 // Tab Switching
@@ -27,6 +31,7 @@ function setupTabNavigation() {
       btn.classList.add('active');
 
       activeTab = btn.dataset.tab;
+      currentPage = 1;
       renderDashboard();
     });
   });
@@ -34,9 +39,9 @@ function setupTabNavigation() {
 
 // Search & Filter Events
 function setupFilters() {
-  document.getElementById('adminSearchInput')?.addEventListener('input', renderDashboard);
-  document.getElementById('statusFilter')?.addEventListener('change', renderDashboard);
-  document.getElementById('dateFilter')?.addEventListener('change', renderDashboard);
+  document.getElementById('adminSearchInput')?.addEventListener('input', () => { currentPage = 1; renderDashboard(); });
+  document.getElementById('statusFilter')?.addEventListener('change', () => { currentPage = 1; renderDashboard(); });
+  document.getElementById('dateFilter')?.addEventListener('change', () => { currentPage = 1; renderDashboard(); });
 }
 
 // Action Buttons
@@ -50,6 +55,7 @@ function setupButtons() {
   document.getElementById('clearAdminBtn')?.addEventListener('click', () => {
     if (confirm('Are you sure you want to clear all stored admin records for ' + activeTab.toUpperCase() + '?')) {
       localStorage.removeItem(`tgs_admin_${activeTab}_orders`);
+      currentPage = 1;
       renderDashboard();
     }
   });
@@ -57,6 +63,21 @@ function setupButtons() {
   document.getElementById('pasteWaOrderBtn')?.addEventListener('click', () => {
     const modal = document.getElementById('pasteWaModal');
     if (modal) modal.classList.add('open');
+  });
+}
+
+// Pagination Setup
+function setupPagination() {
+  document.getElementById('prevPageBtn')?.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderDashboard();
+    }
+  });
+
+  document.getElementById('nextPageBtn')?.addEventListener('click', () => {
+    currentPage++;
+    renderDashboard();
   });
 }
 
@@ -152,7 +173,20 @@ function renderDashboard() {
   document.getElementById('statPending').textContent = pendingCount;
   document.getElementById('statCancelled').textContent = cancelledCount;
 
-  document.getElementById('tableCountText').textContent = `Showing ${filtered.length} of ${records.length} records`;
+  // Pagination Math
+  const totalPages = Math.max(1, Math.ceil(filtered.length / itemsPerPage));
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedList = filtered.slice(startIndex, startIndex + itemsPerPage);
+
+  document.getElementById('tableCountText').textContent = `Showing ${paginatedList.length} of ${filtered.length} records`;
+  document.getElementById('pageInfoText').textContent = `Page ${currentPage} of ${totalPages}`;
+
+  const prevBtn = document.getElementById('prevPageBtn');
+  const nextBtn = document.getElementById('nextPageBtn');
+  if (prevBtn) prevBtn.disabled = (currentPage <= 1);
+  if (nextBtn) nextBtn.disabled = (currentPage >= totalPages);
 
   const dateBadgeMap = { all: 'All Time', today: 'Today', week: 'This Week', month: 'This Month' };
   const badgeEl = document.getElementById('analyticsBadge');
@@ -165,7 +199,7 @@ function renderDashboard() {
   renderTopSellingWidget();
 
   // Render Table
-  renderTable(filtered, customerOrderCounts);
+  renderTable(paginatedList, customerOrderCounts);
 }
 
 // Chart Rendering (Chart.js)
@@ -318,6 +352,18 @@ function renderTopSellingWidget() {
   });
 }
 
+// Order Type Badge Helper
+function getOrderTypeBadgeHtml(orderType) {
+  const type = (orderType || 'delivery').toLowerCase();
+  if (type === 'delivery') {
+    return `<span class="badge-type badge-delivery">🏠 Delivery</span>`;
+  } else if (type === 'takeaway') {
+    return `<span class="badge-type badge-takeaway">🥡 Takeaway</span>`;
+  } else {
+    return `<span class="badge-type badge-dinein">🪑 Dine-In</span>`;
+  }
+}
+
 // Table Rendering
 function renderTable(list, customerCounts) {
   const headEl = document.getElementById('adminTableHead');
@@ -330,6 +376,7 @@ function renderTable(list, customerCounts) {
     headEl.innerHTML = `
       <tr>
         <th>Order ID</th>
+        <th>Order Type</th>
         <th>Customer Name</th>
         <th>Phone</th>
         <th>Dishes / Items</th>
@@ -341,7 +388,7 @@ function renderTable(list, customerCounts) {
     `;
 
     if (!list.length) {
-      bodyEl.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:#64748B;">No food orders found matching filter criteria.</td></tr>`;
+      bodyEl.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#64748B;">No food orders found matching filter criteria.</td></tr>`;
       return;
     }
 
@@ -356,14 +403,16 @@ function renderTable(list, customerCounts) {
       const itemsCount = row.items ? row.items.reduce((s, i) => s + i.qty, 0) : 0;
       let itemsHtml = `<div>${itemsCount} Items <button class="items-popover-btn" onclick="openDetailModal('${row.orderId}')">View Details 👁️</button></div>`;
       
+      const typeBadge = getOrderTypeBadgeHtml(row.orderType);
       const statusBadge = getStatusBadgeHtml(row.status);
 
       tr.innerHTML = `
         <td style="font-weight:700; color:var(--text-dark);" onclick="openDetailModal('${row.orderId}')">${row.orderId}</td>
+        <td>${typeBadge}</td>
         <td style="font-weight:600;" onclick="openDetailModal('${row.orderId}')">${escapeHtml(row.name)} ${regularTag}</td>
         <td><a href="tel:${row.phone}" style="color:var(--saffron-gold); font-weight:700;">${row.phone}</a></td>
         <td>${itemsHtml}</td>
-        <td style="max-width:200px; font-size:0.85rem; color:#475569;" onclick="openDetailModal('${row.orderId}')">${escapeHtml(row.address)}</td>
+        <td style="max-width:180px; font-size:0.85rem; color:#475569;" onclick="openDetailModal('${row.orderId}')">${escapeHtml(row.address)}</td>
         <td style="font-weight:800; color:var(--saffron-gold);">₹${row.totalAmount}</td>
         <td>${statusBadge}</td>
         <td>
@@ -381,6 +430,7 @@ function renderTable(list, customerCounts) {
     headEl.innerHTML = `
       <tr>
         <th>Booking ID</th>
+        <th>Service</th>
         <th>Guest Name</th>
         <th>Phone</th>
         <th>Party Size</th>
@@ -393,16 +443,18 @@ function renderTable(list, customerCounts) {
     `;
 
     if (!list.length) {
-      bodyEl.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#64748B;">No table bookings found matching filter criteria.</td></tr>`;
+      bodyEl.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:30px; color:#64748B;">No table bookings found matching filter criteria.</td></tr>`;
       return;
     }
 
     list.forEach(row => {
       const tr = document.createElement('tr');
       const statusBadge = getStatusBadgeHtml(row.status);
+      const typeBadge = getOrderTypeBadgeHtml('dinein');
 
       tr.innerHTML = `
         <td style="font-weight:700; color:var(--text-dark);" onclick="openDetailModal('${row.orderId}')">${row.orderId}</td>
+        <td>${typeBadge}</td>
         <td style="font-weight:600;" onclick="openDetailModal('${row.orderId}')">${escapeHtml(row.name)}</td>
         <td><a href="tel:${row.phone}" style="color:var(--saffron-gold); font-weight:700;">${row.phone}</a></td>
         <td><span style="background:#FFF8EE; border:1px solid var(--saffron-border); padding:3px 8px; border-radius:12px; font-weight:700;">${escapeHtml(row.guests || '2 Guests')}</span></td>
@@ -424,6 +476,7 @@ function renderTable(list, customerCounts) {
     headEl.innerHTML = `
       <tr>
         <th>Enquiry ID</th>
+        <th>Category</th>
         <th>Client Name</th>
         <th>Phone</th>
         <th>Event Date</th>
@@ -436,7 +489,7 @@ function renderTable(list, customerCounts) {
     `;
 
     if (!list.length) {
-      bodyEl.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#64748B;">No event bookings found matching filter criteria.</td></tr>`;
+      bodyEl.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:30px; color:#64748B;">No event bookings found matching filter criteria.</td></tr>`;
       return;
     }
 
@@ -446,6 +499,7 @@ function renderTable(list, customerCounts) {
 
       tr.innerHTML = `
         <td style="font-weight:700; color:var(--text-dark);" onclick="openDetailModal('${row.orderId}')">${row.orderId}</td>
+        <td><span class="badge-type badge-takeaway">🎉 Event</span></td>
         <td style="font-weight:600;" onclick="openDetailModal('${row.orderId}')">${escapeHtml(row.name)}</td>
         <td><a href="tel:${row.phone}" style="color:var(--saffron-gold); font-weight:700;">${row.phone}</a></td>
         <td>${row.date}</td>
@@ -530,6 +584,15 @@ window.closeDetailModal = function() {
   if (modal) modal.classList.remove('open');
 };
 
+// Sequential Order ID Generator for WhatsApp Imports
+function getNextSequentialOrderId() {
+  let seq = parseInt(localStorage.getItem('tgs_order_seq') || '3001', 10);
+  if (isNaN(seq) || seq < 3001) seq = 3001;
+  const orderId = `TGS-${seq}`;
+  localStorage.setItem('tgs_order_seq', (seq + 1).toString());
+  return orderId;
+}
+
 // WhatsApp Order Text Parser
 function parseWhatsAppOrderText(text) {
   if (!text || !text.trim()) return null;
@@ -541,7 +604,7 @@ function parseWhatsAppOrderText(text) {
   const gpsMatch = text.match(/(https:\/\/maps\.google\.com[^\s\n]+)/i);
   const totalMatch = text.match(/TOTAL AMOUNT:\s*₹?\s*(\d+)/i) || text.match(/Total Amount:\s*₹?\s*(\d+)/i) || text.match(/Total:\s*₹?\s*(\d+)/i);
 
-  const orderId = idMatch ? idMatch[1].trim() : ('TGS-WA-' + Math.floor(1000 + Math.random() * 9000));
+  const orderId = idMatch ? idMatch[1].trim() : getNextSequentialOrderId();
   const name = nameMatch ? nameMatch[1].replace(/\*/g, '').trim() : 'WhatsApp Customer';
   const phone = phoneMatch ? phoneMatch[1].replace(/[^0-9]/g, '') : '9701325292';
   const address = addressMatch ? addressMatch[1].replace(/\*/g, '').trim() : 'WhatsApp Direct Order';
@@ -587,11 +650,7 @@ window.openDetailModal = function(orderId) {
   const actionsEl = document.getElementById('detailModalActions');
 
   if (titleEl) {
-    titleEl.innerHTML = `
-      <div style="display:flex; align-items:center; justify-style:space-between; width:100%; gap:12px;">
-        <span>🆔 ${row.orderId} — Order Details</span>
-      </div>
-    `;
+    titleEl.textContent = `🆔 ${row.orderId} — Order Details`;
   }
 
   let itemsTableHtml = '';
@@ -623,6 +682,7 @@ window.openDetailModal = function(orderId) {
   const placedDate = new Date(row.timestamp || Date.now());
   const formattedTime = placedDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
   const formattedDate = placedDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  const typeBadge = getOrderTypeBadgeHtml(row.orderType);
 
   if (bodyEl) {
     bodyEl.innerHTML = `
@@ -639,13 +699,14 @@ window.openDetailModal = function(orderId) {
           <div style="font-size:0.78rem; color:#64748B; font-weight:700; text-transform:uppercase;">Customer Info</div>
           <div style="font-size:1.1rem; font-weight:800; color:var(--text-dark); margin-top:2px;">${escapeHtml(row.name)}</div>
           <div style="margin-top:4px;"><a href="tel:${row.phone}" style="color:var(--saffron-gold); font-weight:700;">📞 ${row.phone}</a></div>
-          <div style="margin-top:4px; font-size:0.82rem; color:#475569;">Status: <strong>${escapeHtml(row.status)}</strong></div>
+          <div style="margin-top:6px;">Order Type: ${typeBadge}</div>
+          <div style="margin-top:6px; font-size:0.82rem; color:#475569;">Status: <strong>${escapeHtml(row.status)}</strong></div>
         </div>
 
         <div>
           <div style="font-size:0.78rem; color:#64748B; font-weight:700; text-transform:uppercase;">Delivery / Service Info</div>
           <div style="font-weight:700; color:var(--text-dark); margin-top:2px;">${escapeHtml(row.address || 'Counter Pickup')}</div>
-          ${row.gpsUrl ? `<div style="margin-top:4px;"><a href="${row.gpsUrl}" target="_blank" style="color:#3B82F6; font-size:0.82rem; font-weight:700;">📍 Open Customer GPS Map Pin 🔗</a></div>` : ''}
+          ${row.gpsUrl ? `<div style="margin-top:6px;"><a href="${row.gpsUrl}" target="_blank" style="color:#3B82F6; font-size:0.82rem; font-weight:700;">📍 Open Customer GPS Map Pin 🔗</a></div>` : ''}
         </div>
       </div>
 
@@ -676,7 +737,6 @@ window.openDetailModal = function(orderId) {
       <button onclick="cancelOrder('${row.orderId}')" style="background:#EF4444; color:#FFF; border:none; padding:8px 14px; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">❌ Cancel Order</button>
       <button onclick="openQrModal(${row.totalAmount})" style="background:#3B82F6; color:#FFF; border:none; padding:8px 14px; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">📱 UPI Payment QR</button>
       <button onclick="printKitchenTicket('${row.orderId}')" style="background:#64748B; color:#FFF; border:none; padding:8px 14px; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">🖨️ Print Kitchen Ticket</button>
-      <button onclick="closeDetailModal()" class="btn-back-modal" style="margin-left:auto;">⬅️ Back to Table</button>
     `;
   }
 
@@ -799,12 +859,13 @@ function exportToCsv() {
   }
 
   let csvContent = 'data:text/csv;charset=utf-8,';
-  csvContent += 'Order ID,Date/Time,Customer Name,Phone,Order Type / Details,Address,Total Amount (INR),Status,Cancellation Reason,Internal Notes\n';
+  csvContent += 'Order ID,Order Type,Date/Time,Customer Name,Phone,Order Type / Details,Address,Total Amount (INR),Status,Cancellation Reason,Internal Notes\n';
 
   records.forEach(r => {
     const itemsStr = r.items ? r.items.map(i => `${i.qty}x ${i.name}`).join(' | ') : (r.occasion || 'Booking');
     const row = [
       `"${r.orderId || ''}"`,
+      `"${r.orderType || 'delivery'}"`,
       `"${new Date(r.timestamp || Date.now()).toLocaleString()}"`,
       `"${(r.name || '').replace(/"/g, '""')}"`,
       `"${r.phone || ''}"`,
