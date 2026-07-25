@@ -86,6 +86,9 @@
         <button id="exportCsvBtn" class="btn btn--ghost" style="padding: 10px 14px; font-size: 0.85rem; border: 1.5px solid #CBD5E1; color: var(--text-dark);">
           📥 Export CSV
         </button>
+        <button id="syncDataBtn" class="btn btn--ghost" style="padding: 10px 14px; font-size: 0.85rem; border: 1.5px solid #CBD5E1; color: var(--text-dark);">
+          ☁️ Sync / Backup
+        </button>
         <button id="pasteWaOrderBtn" class="btn btn--gold" style="padding: 10px 14px; font-size: 0.85rem;">
           📋 Paste WhatsApp Order
         </button>
@@ -251,6 +254,36 @@
     <button class="btn btn--gold" id="copyUpiLinkBtn" style="width: 100%; margin-top: 6px;">
       🔗 Copy UPI Deep-Link
     </button>
+  </div>
+</div>
+
+<!-- Sync / Backup Data Modal -->
+<div class="cart-modal" id="syncModal">
+  <div class="cart-modal__panel" style="max-width: 540px; text-align: left;">
+    <div class="cart-modal__header">
+      <h3 class="cart-modal__title">☁️ Cross-Device Data Sync &amp; Backup</h3>
+      <button class="cart-modal__close" id="closeSyncModal">✕</button>
+    </div>
+    
+    <div style="padding: 16px 0;">
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+        To sync orders between your <strong>PC</strong> and <strong>Mobile Phone</strong>, copy your database code below or paste it from your other device:
+      </p>
+
+      <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-dark); display: block; margin-bottom: 4px;">📤 Export Current Device Backup Code:</label>
+      <textarea id="syncExportArea" readonly style="width: 100%; height: 90px; padding: 10px; border: 1.5px solid #CBD5E1; border-radius: 8px; font-family: monospace; font-size: 0.78rem; outline: none; background: #F8FAFC;"></textarea>
+      <button class="btn btn--gold" id="copySyncCodeBtn" style="width: 100%; margin-top: 6px; padding: 8px; font-size: 0.82rem;">
+        📋 Copy Backup Code to Clipboard
+      </button>
+
+      <hr style="border: 0; border-top: 1px solid #E2E8F0; margin: 16px 0;">
+
+      <label style="font-size: 0.82rem; font-weight: 700; color: var(--text-dark); display: block; margin-bottom: 4px;">📥 Import Backup Code from Other Device:</label>
+      <textarea id="syncImportArea" style="width: 100%; height: 90px; padding: 10px; border: 1.5px solid #CBD5E1; border-radius: 8px; font-family: monospace; font-size: 0.78rem; outline: none;" placeholder="Paste the backup code from your other device here..."></textarea>
+      <button class="btn btn--gold" id="applySyncImportBtn" style="width: 100%; margin-top: 6px; padding: 8px; font-size: 0.82rem; background: #10B981; border-color: #059669;">
+        ⚡ Restore &amp; Merge Orders
+      </button>
+    </div>
   </div>
 </div>
 

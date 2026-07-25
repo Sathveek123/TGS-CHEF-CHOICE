@@ -302,19 +302,26 @@ function renderChart(data, range) {
 
   } else {
     const numDays = range === 'month' ? 30 : 7;
+    const dateKeys = [];
     for (let i = numDays - 1; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
+      const isoKey = d.toISOString().slice(0, 10);
+      dateKeys.push(isoKey);
       labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
       counts.push(0);
       revenues.push(0);
     }
 
     data.forEach(r => {
-      const rDate = new Date(r.timestamp || Date.now());
-      const dayDiff = Math.floor((Date.now() - rDate.getTime()) / (1000 * 60 * 60 * 24));
-      if (dayDiff >= 0 && dayDiff < numDays) {
-        const idx = (numDays - 1) - dayDiff;
+      let rDateStr = '';
+      try {
+        rDateStr = new Date(r.timestamp || Date.now()).toISOString().slice(0, 10);
+      } catch (e) {
+        rDateStr = new Date().toISOString().slice(0, 10);
+      }
+      const idx = dateKeys.indexOf(rDateStr);
+      if (idx !== -1) {
         counts[idx]++;
         if (r.paymentStatus === 'Paid') {
           revenues[idx] += (r.totalAmount || 0);
@@ -679,6 +686,62 @@ function setupModals() {
     copyBtn.textContent = '✅ UPI Link Copied!';
     setTimeout(() => copyBtn.textContent = '🔗 Copy UPI Deep-Link', 2000);
   });
+
+  // Sync / Backup Modal Handlers
+  document.getElementById('syncDataBtn')?.addEventListener('click', () => {
+    const modal = document.getElementById('syncModal');
+    const exportArea = document.getElementById('syncExportArea');
+    
+    const fullBackup = {
+      food: getRecords('food'),
+      table: getRecords('table'),
+      event: getRecords('event'),
+      exportDate: new Date().toISOString()
+    };
+    if (exportArea) exportArea.value = JSON.stringify(fullBackup);
+    if (modal) modal.classList.add('open');
+  });
+
+  document.getElementById('closeSyncModal')?.addEventListener('click', () => {
+    document.getElementById('syncModal')?.classList.remove('open');
+  });
+
+  document.getElementById('copySyncCodeBtn')?.addEventListener('click', () => {
+    const exportArea = document.getElementById('syncExportArea');
+    if (exportArea && exportArea.value) {
+      navigator.clipboard.writeText(exportArea.value);
+      alert('✅ Backup code copied! You can now paste this code into your other device (PC or Mobile) to sync all orders.');
+    }
+  });
+
+  document.getElementById('applySyncImportBtn')?.addEventListener('click', () => {
+    const importArea = document.getElementById('syncImportArea');
+    const val = (importArea?.value || '').trim();
+    if (!val) {
+      alert('Please paste the backup code from your other device first.');
+      return;
+    }
+    try {
+      const parsed = JSON.parse(val);
+      if (parsed.food && Array.isArray(parsed.food)) saveRecords('food', mergeRecords(getRecords('food'), parsed.food));
+      if (parsed.table && Array.isArray(parsed.table)) saveRecords('table', mergeRecords(getRecords('table'), parsed.table));
+      if (parsed.event && Array.isArray(parsed.event)) saveRecords('event', mergeRecords(getRecords('event'), parsed.event));
+      
+      alert('✅ Cross-device orders synced and merged successfully!');
+      document.getElementById('syncModal')?.classList.remove('open');
+      if (importArea) importArea.value = '';
+      renderDashboard();
+    } catch (e) {
+      alert('❌ Invalid backup code format. Please verify the copied text.');
+    }
+  });
+}
+
+function mergeRecords(existing, incoming) {
+  const map = new Map();
+  existing.forEach(r => map.set(r.orderId, r));
+  incoming.forEach(r => map.set(r.orderId, r));
+  return Array.from(map.values());
 }
 
 // Close Detail Modal helper

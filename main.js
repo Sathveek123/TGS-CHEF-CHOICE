@@ -862,52 +862,62 @@ function initMenuCart() {
   togglePeekBtn?.addEventListener('click', togglePopover);
   closePopoverBtn?.addEventListener('click', () => popover?.classList.remove('open'));
 
-  // GPS Location Detection Handler
+  // GPS Location Detection Handler (High-Accuracy Hardware GPS + Google Maps Doorstep Link)
   detectGpsBtn?.addEventListener('click', () => {
     if (!navigator.geolocation) {
       if (gpsStatusText) gpsStatusText.textContent = '❌ GPS not supported on your browser.';
       return;
     }
 
-    if (gpsStatusText) gpsStatusText.textContent = '⏳ Detecting location...';
+    if (gpsStatusText) gpsStatusText.textContent = '🛰️ Acquiring high-accuracy satellite GPS coordinates...';
 
     navigator.geolocation.getCurrentPosition(
       async pos => {
         const lat = pos.coords.latitude;
         const lng = pos.coords.longitude;
-        const customerPinUrl = `https://maps.google.com/?q=${lat.toFixed(5)},${lng.toFixed(5)}`;
-        // Turn-by-turn Driving Route from TGS ChefChoice Kasibugga to Customer Delivery Location
-        const routeFromTgsUrl = `https://www.google.com/maps/dir/?api=1&origin=TGS+ChefChoice+Kasibugga&destination=${lat.toFixed(5)},${lng.toFixed(5)}`;
+        const accuracyMeters = Math.round(pos.coords.accuracy || 10);
+        const customerPinUrl = `https://www.google.com/maps?q=${lat.toFixed(6)},${lng.toFixed(6)}`;
+        const routeFromTgsUrl = `https://www.google.com/maps/dir/?api=1&origin=TGS+ChefChoice+Kasibugga&destination=${lat.toFixed(6)},${lng.toFixed(6)}`;
 
         if (cartGpsUrl) cartGpsUrl.value = customerPinUrl;
         window.tgsRouteUrl = routeFromTgsUrl;
 
+        let detectedArea = '';
         try {
-          if (gpsStatusText) gpsStatusText.textContent = '📍 Resolving street address...';
           const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`, {
             headers: { 'Accept-Language': 'en-US,en;q=0.9' }
           });
           if (res.ok) {
             const data = await res.json();
             if (data && data.display_name) {
-              if (cartAddress) cartAddress.value = data.display_name;
-              if (gpsStatusText) gpsStatusText.textContent = '✅ Location & Address Detected!';
-              return;
+              detectedArea = data.display_name;
             }
           }
         } catch (err) {
           console.warn('Reverse geocoding error:', err);
         }
 
-        if (cartAddress && !cartAddress.value) {
-          cartAddress.value = `📍 Current GPS Coords: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+        const existingText = (cartAddress?.value || '').trim();
+        let formattedAddr = '';
+
+        if (existingText && !existingText.includes('http')) {
+          formattedAddr = `${existingText}\n\n📍 Exact GPS Pin (Accurate to ~${accuracyMeters}m):\n${customerPinUrl}`;
+        } else if (detectedArea) {
+          formattedAddr = `[Nearby Area: ${detectedArea}]\n\n🏠 House No / Street Landmark (e.g. Labour Colony, Marruthi Nagar):\n`;
+        } else {
+          formattedAddr = `📍 Exact GPS Pin: ${customerPinUrl}\n\n🏠 House No / Street Landmark:\n`;
         }
-        if (gpsStatusText) gpsStatusText.textContent = '✅ Location Detected!';
+
+        if (cartAddress) cartAddress.value = formattedAddr;
+        if (gpsStatusText) {
+          gpsStatusText.textContent = `🎯 Exact GPS Detected (Accurate to ~${accuracyMeters}m)! Please type your House No/Landmark.`;
+        }
       },
       err => {
-        if (gpsStatusText) gpsStatusText.textContent = '⚠️ Location permission denied or timed out.';
+        console.warn('GPS Error:', err);
+        if (gpsStatusText) gpsStatusText.textContent = '⚠️ Could not detect exact GPS. Please type your full address & landmark below.';
       },
-      { timeout: 10000, enableHighAccuracy: true }
+      { timeout: 15000, enableHighAccuracy: true, maximumAge: 0 }
     );
   });
 
