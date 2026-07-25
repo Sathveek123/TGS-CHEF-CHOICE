@@ -1023,6 +1023,9 @@ function initMenuCart() {
     msg += `💰 *TOTAL AMOUNT: ₹${total}*\n`;
     msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
+    msg += `💳 *TAP TO PAY VIA UPI (PhonePe / GPay / Paytm):*\n`;
+    msg += `upi://pay?pa=tgschefchoice@okicici&pn=TGS%20ChefChoice&am=${total}&cu=INR\n\n`;
+
     msg += `_Order placed via tgs-chef-choice.vercel.app_`;
 
     // Save record to Admin Dashboard LocalStorage BEFORE opening WhatsApp
@@ -1035,7 +1038,8 @@ function initMenuCart() {
       gpsUrl,
       items: Object.entries(cart).map(([n, i]) => ({ name: n, qty: i.qty, price: i.price })),
       totalAmount: total,
-      status: 'Awaiting WA'
+      status: 'Awaiting WA',
+      paymentStatus: 'Unpaid'
     });
 
     const encoded = encodeURIComponent(msg);

@@ -1,13 +1,17 @@
 /* ============================================================
-   TGS CHEFCHOICE — Admin Dashboard Interactive Logic (v2.3)
-   Includes: Multi-filtering, Order Type column, Sequential Order IDs (TGS-3001+),
-   Table Pagination (10 per page), Redesigned View Details UI with single Back button,
-   CSV export, Cancellation Reason prompt + WA alert, Predefined Confirm WA alert,
-   Top Selling Dishes widget, Regular customer tags, Printable Kitchen Slips,
-   and WhatsApp Order Importer/Parser.
+   TGS CHEFCHOICE — Admin Dashboard Interactive Logic (v3.0)
+   Includes: Admin Login Auth (balakrishna / 9701325292),
+   Payment Verification Logic (Revenue ONLY counts verified Paid orders),
+   Payment Status Column & 1-Click "Mark Paid" Toggle,
+   UPI Deep Link in WhatsApp alerts, Sequential Order IDs (TGS-3001+),
+   Multi-filtering, CSV export, Order Detail modal with Back Button,
+   Internal Notes, Top Selling Dishes widget, Regular customer tags,
+   Printable Kitchen Slips, and WhatsApp Order Importer/Parser.
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
+  checkAdminAuth();
+  setupAuthListeners();
   setupTabNavigation();
   setupFilters();
   setupButtons();
@@ -21,6 +25,52 @@ let activeTab = 'food';
 let currentPage = 1;
 const itemsPerPage = 10;
 let chartInstance = null;
+
+// Auth Check & Overlay Control
+function checkAdminAuth() {
+  const isLoggedIn = sessionStorage.getItem('tgs_admin_logged_in') === 'true';
+  const overlay = document.getElementById('adminLoginOverlay');
+  if (overlay) {
+    if (isLoggedIn) {
+      overlay.classList.remove('open');
+      overlay.style.display = 'none';
+    } else {
+      overlay.classList.add('open');
+      overlay.style.display = 'flex';
+    }
+  }
+}
+
+function setupAuthListeners() {
+  const form = document.getElementById('adminLoginForm');
+  const userIn = document.getElementById('loginUsername');
+  const passIn = document.getElementById('loginPassword');
+  const errEl = document.getElementById('loginErrorMsg');
+  const logoutBtn = document.getElementById('adminLogoutBtn');
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const username = (userIn?.value || '').trim().toLowerCase();
+    const password = (passIn?.value || '').trim();
+
+    if (username === 'balakrishna' && password === '9701325292') {
+      sessionStorage.setItem('tgs_admin_logged_in', 'true');
+      if (errEl) errEl.style.display = 'none';
+      checkAdminAuth();
+      renderDashboard();
+    } else {
+      if (errEl) errEl.style.display = 'block';
+    }
+  });
+
+  logoutBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (confirm('Are you sure you want to log out of the Admin Console?')) {
+      sessionStorage.removeItem('tgs_admin_logged_in');
+      checkAdminAuth();
+    }
+  });
+}
 
 // Tab Switching
 function setupTabNavigation() {
@@ -41,6 +91,7 @@ function setupTabNavigation() {
 function setupFilters() {
   document.getElementById('adminSearchInput')?.addEventListener('input', () => { currentPage = 1; renderDashboard(); });
   document.getElementById('statusFilter')?.addEventListener('change', () => { currentPage = 1; renderDashboard(); });
+  document.getElementById('paymentFilter')?.addEventListener('change', () => { currentPage = 1; renderDashboard(); });
   document.getElementById('dateFilter')?.addEventListener('change', () => { currentPage = 1; renderDashboard(); });
 }
 
@@ -98,9 +149,15 @@ function saveRecords(tab, list) {
 
 // Master Render Function
 function renderDashboard() {
+  if (sessionStorage.getItem('tgs_admin_logged_in') !== 'true') {
+    checkAdminAuth();
+    return;
+  }
+
   const records = getRecords(activeTab);
   const searchQuery = document.getElementById('adminSearchInput')?.value.toLowerCase().trim() || '';
   const statusVal = document.getElementById('statusFilter')?.value || 'all';
+  const paymentVal = document.getElementById('paymentFilter')?.value || 'all';
   const dateVal = document.getElementById('dateFilter')?.value || 'week';
 
   // Compute repeat customer map across all food orders
@@ -123,6 +180,13 @@ function renderDashboard() {
     // Status match
     if (statusVal !== 'all' && r.status !== statusVal) {
       return false;
+    }
+
+    // Payment Status match
+    if (paymentVal !== 'all') {
+      const isPaid = (r.paymentStatus === 'Paid');
+      if (paymentVal === 'Paid' && !isPaid) return false;
+      if (paymentVal === 'Unpaid' && isPaid) return false;
     }
 
     // Date range match
@@ -162,9 +226,10 @@ function renderDashboard() {
   }
 
   // Update Stats Cards
+  // REVENUE IS ONLY CALCULATED FOR ORDERS WHERE PAYMENT IS VERIFIED (paymentStatus === 'Paid')!
   const totalCount = filtered.length;
-  const confirmedList = filtered.filter(r => r.status === 'Confirmed');
-  const revenue = confirmedList.reduce((s, r) => s + (r.totalAmount || 0), 0);
+  const paidList = filtered.filter(r => r.paymentStatus === 'Paid');
+  const revenue = paidList.reduce((s, r) => s + (r.totalAmount || 0), 0);
   const pendingCount = filtered.filter(r => r.status === 'Pending' || r.status === 'Awaiting WA').length;
   const cancelledCount = filtered.filter(r => r.status === 'Cancelled').length;
 
@@ -232,7 +297,7 @@ function renderChart(data, range) {
       else idx = 6;
 
       counts[idx]++;
-      if (r.status === 'Confirmed') revenues[idx] += (r.totalAmount || 0);
+      if (r.paymentStatus === 'Paid') revenues[idx] += (r.totalAmount || 0);
     });
 
   } else {
@@ -251,7 +316,7 @@ function renderChart(data, range) {
       if (dayDiff >= 0 && dayDiff < numDays) {
         const idx = (numDays - 1) - dayDiff;
         counts[idx]++;
-        if (r.status === 'Confirmed') {
+        if (r.paymentStatus === 'Paid') {
           revenues[idx] += (r.totalAmount || 0);
         }
       }
@@ -273,7 +338,7 @@ function renderChart(data, range) {
           yAxisID: 'y'
         },
         {
-          label: 'Revenue (₹)',
+          label: 'Verified Revenue (₹)',
           data: revenues,
           type: 'line',
           borderColor: '#10B981',
@@ -300,7 +365,7 @@ function renderChart(data, range) {
           type: 'linear',
           display: true,
           position: 'right',
-          title: { display: true, text: 'Revenue (₹)' },
+          title: { display: true, text: 'Verified Revenue (₹)' },
           grid: { drawOnChartArea: false }
         }
       }
@@ -364,6 +429,29 @@ function getOrderTypeBadgeHtml(orderType) {
   }
 }
 
+// Payment Status Badge & Toggle Helper
+function getPaymentStatusHtml(row) {
+  const isPaid = (row.paymentStatus === 'Paid');
+  if (isPaid) {
+    return `<span class="status-badge status-confirmed" style="cursor:pointer;" title="Click to change payment status" onclick="togglePaymentStatus('${row.orderId}')">✅ Paid</span>`;
+  } else {
+    return `<button onclick="togglePaymentStatus('${row.orderId}')" style="background:#F59E0B; color:#FFF; border:none; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;" title="Click to verify customer payment">💳 Mark Paid</button>`;
+  }
+}
+
+// Toggle Payment Status
+window.togglePaymentStatus = function(orderId) {
+  const list = getRecords(activeTab);
+  const idx = list.findIndex(r => r.orderId === orderId);
+  if (idx !== -1) {
+    const current = list[idx].paymentStatus;
+    const newStatus = (current === 'Paid') ? 'Unpaid' : 'Paid';
+    list[idx].paymentStatus = newStatus;
+    saveRecords(activeTab, list);
+    renderDashboard();
+  }
+};
+
 // Table Rendering
 function renderTable(list, customerCounts) {
   const headEl = document.getElementById('adminTableHead');
@@ -386,12 +474,13 @@ function renderTable(list, customerCounts) {
         <th>Delivery Address</th>
         <th>Total</th>
         <th>Status</th>
+        <th>Payment</th>
         <th>Action</th>
       </tr>
     `;
 
     if (!list.length) {
-      bodyEl.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:#64748B;">No food orders found matching filter criteria.</td></tr>`;
+      bodyEl.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:30px; color:#64748B;">No food orders found matching filter criteria.</td></tr>`;
       return;
     }
 
@@ -408,6 +497,7 @@ function renderTable(list, customerCounts) {
       
       const typeBadge = getOrderTypeBadgeHtml(row.orderType);
       const statusBadge = getStatusBadgeHtml(row.status);
+      const paymentBadge = getPaymentStatusHtml(row);
 
       tr.innerHTML = `
         <td style="font-weight:700; color:var(--text-dark); white-space:nowrap;" onclick="openDetailModal('${row.orderId}')">${row.orderId}</td>
@@ -418,6 +508,7 @@ function renderTable(list, customerCounts) {
         <td style="max-width:180px; font-size:0.85rem; color:#475569;" onclick="openDetailModal('${row.orderId}')">${escapeHtml(row.address)}</td>
         <td style="font-weight:800; color:var(--saffron-gold);">₹${row.totalAmount}</td>
         <td>${statusBadge}</td>
+        <td>${paymentBadge}</td>
         <td>
           <div style="display:flex; gap:4px; white-space:nowrap;">
             <button onclick="confirmOrder('${row.orderId}')" style="background:#10B981; color:#FFF; border:none; padding:5px 8px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">✅ Confirm</button>
@@ -441,12 +532,13 @@ function renderTable(list, customerCounts) {
         <th>Occasion / Notes</th>
         <th>Est. Bill</th>
         <th>Status</th>
+        <th>Payment</th>
         <th>Action</th>
       </tr>
     `;
 
     if (!list.length) {
-      bodyEl.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:30px; color:#64748B;">No table bookings found matching filter criteria.</td></tr>`;
+      bodyEl.innerHTML = `<tr><td colspan="11" style="text-align:center; padding:30px; color:#64748B;">No table bookings found matching filter criteria.</td></tr>`;
       return;
     }
 
@@ -454,6 +546,7 @@ function renderTable(list, customerCounts) {
       const tr = document.createElement('tr');
       const statusBadge = getStatusBadgeHtml(row.status);
       const typeBadge = getOrderTypeBadgeHtml('dinein');
+      const paymentBadge = getPaymentStatusHtml(row);
 
       tr.innerHTML = `
         <td style="font-weight:700; color:var(--text-dark);" onclick="openDetailModal('${row.orderId}')">${row.orderId}</td>
@@ -465,6 +558,7 @@ function renderTable(list, customerCounts) {
         <td><span style="font-size:0.85rem; color:#475569;">${escapeHtml(row.occasion || 'General Dining')}</span></td>
         <td style="font-weight:800; color:var(--saffron-gold);">₹${row.totalAmount || 1000}</td>
         <td>${statusBadge}</td>
+        <td>${paymentBadge}</td>
         <td>
           <div style="display:flex; gap:6px;">
             <button onclick="confirmOrder('${row.orderId}')" style="background:#10B981; color:#FFF; border:none; padding:5px 9px; border-radius:6px; font-size:0.78rem; font-weight:700; cursor:pointer;">✅ Confirm</button>
@@ -487,18 +581,20 @@ function renderTable(list, customerCounts) {
         <th>Notes / Setup</th>
         <th>Est. Budget</th>
         <th>Status</th>
+        <th>Payment</th>
         <th>Action</th>
       </tr>
     `;
 
     if (!list.length) {
-      bodyEl.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:30px; color:#64748B;">No event bookings found matching filter criteria.</td></tr>`;
+      bodyEl.innerHTML = `<tr><td colspan="11" style="text-align:center; padding:30px; color:#64748B;">No event bookings found matching filter criteria.</td></tr>`;
       return;
     }
 
     list.forEach(row => {
       const tr = document.createElement('tr');
       const statusBadge = getStatusBadgeHtml(row.status);
+      const paymentBadge = getPaymentStatusHtml(row);
 
       tr.innerHTML = `
         <td style="font-weight:700; color:var(--text-dark);" onclick="openDetailModal('${row.orderId}')">${row.orderId}</td>
@@ -510,6 +606,7 @@ function renderTable(list, customerCounts) {
         <td style="font-size:0.85rem; color:#475569;">${escapeHtml(row.notes || 'No extra notes')}</td>
         <td style="font-weight:800; color:var(--saffron-gold);">₹${row.totalAmount || 5000}</td>
         <td>${statusBadge}</td>
+        <td>${paymentBadge}</td>
         <td>
           <div style="display:flex; gap:6px;">
             <button onclick="confirmOrder('${row.orderId}')" style="background:#10B981; color:#FFF; border:none; padding:5px 9px; border-radius:6px; font-size:0.78rem; font-weight:700; cursor:pointer;">✅ Confirm</button>
@@ -638,6 +735,7 @@ function parseWhatsAppOrderText(text) {
     items: items.length ? items : [{ name: 'WhatsApp Special Order', qty: 1, price: totalAmount || 300 }],
     totalAmount: totalAmount || (items.reduce((s, i) => s + (i.qty * i.price), 0)) || 500,
     status: 'Pending',
+    paymentStatus: 'Unpaid',
     timestamp: new Date().toISOString()
   };
 }
@@ -686,6 +784,7 @@ window.openDetailModal = function(orderId) {
   const formattedTime = placedDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
   const formattedDate = placedDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
   const typeBadge = getOrderTypeBadgeHtml(row.orderType);
+  const isPaid = (row.paymentStatus === 'Paid');
 
   if (bodyEl) {
     bodyEl.innerHTML = `
@@ -704,6 +803,7 @@ window.openDetailModal = function(orderId) {
           <div style="margin-top:4px;"><a href="tel:${row.phone}" style="color:var(--saffron-gold); font-weight:700;">📞 ${row.phone}</a></div>
           <div style="margin-top:6px;">Order Type: ${typeBadge}</div>
           <div style="margin-top:6px; font-size:0.82rem; color:#475569;">Status: <strong>${escapeHtml(row.status)}</strong></div>
+          <div style="margin-top:4px; font-size:0.82rem;">Payment: <strong style="color:${isPaid ? '#10B981' : '#F59E0B'}">${isPaid ? '✅ Paid (Verified)' : '💳 Unpaid'}</strong></div>
         </div>
 
         <div>
@@ -737,6 +837,7 @@ window.openDetailModal = function(orderId) {
   if (actionsEl) {
     actionsEl.innerHTML = `
       <button onclick="confirmOrder('${row.orderId}')" class="btn btn--gold" style="padding:8px 14px; font-size:0.85rem;">✅ Confirm &amp; WhatsApp</button>
+      <button onclick="togglePaymentStatus('${row.orderId}')" style="background:${isPaid ? '#64748B' : '#F59E0B'}; color:#FFF; border:none; padding:8px 14px; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">${isPaid ? '💳 Mark Unpaid' : '✅ Mark Paid (Verify)'}</button>
       <button onclick="cancelOrder('${row.orderId}')" style="background:#EF4444; color:#FFF; border:none; padding:8px 14px; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">❌ Cancel Order</button>
       <button onclick="openQrModal(${row.totalAmount})" style="background:#3B82F6; color:#FFF; border:none; padding:8px 14px; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">📱 UPI Payment QR</button>
       <button onclick="printKitchenTicket('${row.orderId}')" style="background:#64748B; color:#FFF; border:none; padding:8px 14px; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer;">🖨️ Print Kitchen Ticket</button>
@@ -759,7 +860,7 @@ window.saveOwnerNotes = function(orderId) {
   }
 };
 
-// Confirm Order Handler with Predefined WhatsApp Confirmation
+// Confirm Order Handler with Predefined WhatsApp Confirmation + UPI Pay Link
 window.confirmOrder = function(orderId) {
   const list = getRecords(activeTab);
   const idx = list.findIndex(r => r.orderId === orderId);
@@ -777,7 +878,8 @@ window.confirmOrder = function(orderId) {
   msg += `Customer Name: ${row.name}\n`;
   msg += `Total Bill: ₹${row.totalAmount}\n`;
   msg += `Prep & Delivery Time: ~20-25 minutes\n\n`;
-  msg += `Payment: Pay on delivery/pickup via Cash or UPI.\n`;
+  msg += `💳 *PAY NOW VIA UPI (PhonePe / GPay / Paytm):*\n`;
+  msg += `upi://pay?pa=tgschefchoice@okicici&pn=TGS%20ChefChoice&am=${row.totalAmount}&cu=INR\n\n`;
   msg += `Looking forward to serving you delicious food! 🍽️\n`;
   msg += `- TGS ChefChoice Kasibugga`;
 
@@ -844,7 +946,7 @@ window.printKitchenTicket = function(orderId) {
       ${itemsListHtml}
     </div>
     <div style="border-top:1px dashed #000; padding-top:6px; font-weight:bold; font-size:14px;">
-      TOTAL BILL: Rs. ${row.totalAmount}
+      TOTAL BILL: Rs. ${row.totalAmount} (${row.paymentStatus === 'Paid' ? 'PAID' : 'UNPAID'})
     </div>
     ${row.internalNotes ? `<div style="margin-top:6px; font-size:11px;">* Note: ${escapeHtml(row.internalNotes)}</div>` : ''}
   `;
@@ -862,7 +964,7 @@ function exportToCsv() {
   }
 
   let csvContent = 'data:text/csv;charset=utf-8,';
-  csvContent += 'Order ID,Order Type,Date/Time,Customer Name,Phone,Order Type / Details,Address,Total Amount (INR),Status,Cancellation Reason,Internal Notes\n';
+  csvContent += 'Order ID,Order Type,Date/Time,Customer Name,Phone,Order Type / Details,Address,Total Amount (INR),Status,Payment Status,Cancellation Reason,Internal Notes\n';
 
   records.forEach(r => {
     const itemsStr = r.items ? r.items.map(i => `${i.qty}x ${i.name}`).join(' | ') : (r.occasion || 'Booking');
@@ -876,6 +978,7 @@ function exportToCsv() {
       `"${(r.address || '').replace(/"/g, '""')}"`,
       r.totalAmount || 0,
       `"${r.status || 'Pending'}"`,
+      `"${r.paymentStatus || 'Unpaid'}"`,
       `"${(r.cancelReason || '').replace(/"/g, '""')}"`,
       `"${(r.internalNotes || '').replace(/"/g, '""')}"`
     ];
