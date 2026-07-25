@@ -1024,7 +1024,7 @@ function initMenuCart() {
     msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
     msg += `💳 *TAP TO PAY VIA UPI (PhonePe / GPay / Paytm):*\n`;
-    msg += `upi://pay?pa=tgschefchoice@okicici&pn=TGS%20ChefChoice&am=${total}&cu=INR\n\n`;
+    msg += `upi://pay?pa=9701325292@okbizaxis&pn=TGS%20ChefChoice&am=${total}&cu=INR\n\n`;
 
     msg += `_Order placed via tgs-chef-choice.vercel.app_`;
 

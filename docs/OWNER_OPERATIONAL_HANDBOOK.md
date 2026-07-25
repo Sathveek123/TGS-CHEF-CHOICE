@@ -58,7 +58,7 @@ Namaste! Thank you for your enquiry for [X] guests on [Date].
 We'd love to host your celebration 🎉 For bookings of this size, we ask for a small advance of ₹[300/500] to confirm and reserve your date — this is fully adjusted against your final bill.
 
 You can pay directly here:
-upi://pay?pa=YOUR_UPI_ID&pn=TGS%20ChefChoice&am=[300/500]&cu=INR
+upi://pay?pa=9701325292@okbizaxis&pn=TGS%20ChefChoice&am=[300/500]&cu=INR
 
 Once received, your booking is confirmed ✅ We'll call you a day before to finalize the menu.
 ```

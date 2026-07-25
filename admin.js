@@ -671,7 +671,7 @@ function setupModals() {
 
   copyBtn?.addEventListener('click', () => {
     const amountText = document.getElementById('qrAmount')?.textContent.replace(/[^0-9]/g, '') || '0';
-    const upiUrl = `upi://pay?pa=tgschefchoice@okicici&pn=TGS%20ChefChoice&am=${amountText}&cu=INR`;
+    const upiUrl = `upi://pay?pa=9701325292@okbizaxis&pn=TGS%20ChefChoice&am=${amountText}&cu=INR`;
     navigator.clipboard.writeText(upiUrl);
     copyBtn.textContent = '✅ UPI Link Copied!';
     setTimeout(() => copyBtn.textContent = '🔗 Copy UPI Deep-Link', 2000);
@@ -879,7 +879,7 @@ window.confirmOrder = function(orderId) {
   msg += `Total Bill: ₹${row.totalAmount}\n`;
   msg += `Prep & Delivery Time: ~20-25 minutes\n\n`;
   msg += `💳 *PAY NOW VIA UPI (PhonePe / GPay / Paytm):*\n`;
-  msg += `upi://pay?pa=tgschefchoice@okicici&pn=TGS%20ChefChoice&am=${row.totalAmount}&cu=INR\n\n`;
+  msg += `upi://pay?pa=9701325292@okbizaxis&pn=TGS%20ChefChoice&am=${row.totalAmount}&cu=INR\n\n`;
   msg += `Looking forward to serving you delicious food! 🍽️\n`;
   msg += `- TGS ChefChoice Kasibugga`;
 
@@ -1000,10 +1000,7 @@ window.openQrModal = function(amount) {
   const qrImg = document.getElementById('qrImage');
   const amtEl = document.getElementById('qrAmount');
 
-  const upiUrl = `upi://pay?pa=tgschefchoice@okicici&pn=TGS%20ChefChoice&am=${amount}&cu=INR`;
-  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiUrl)}`;
-
-  if (qrImg) qrImg.src = qrApiUrl;
+  if (qrImg) qrImg.src = 'assets/tgs-qr.jpeg';
   if (amtEl) amtEl.textContent = `₹${amount}`;
 
   if (modal) modal.classList.add('open');
