@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Admin Dashboard — TGS ChefChoice Kasibugga</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="stylesheet" href="styles.css">
@@ -288,8 +288,8 @@
 </div>
 
 <!-- Admin Login Overlay Modal -->
-<div class="cart-modal open" id="adminLoginOverlay" style="background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(8px); z-index: 99999;">
-  <div class="cart-modal__panel" style="max-width: 400px; text-align: center; border: 2px solid var(--saffron-border); box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+<div class="cart-modal open" id="adminLoginOverlay" style="position: fixed; inset: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(8px); z-index: 999999; padding: 20px; box-sizing: border-box; overflow-y: auto;">
+  <div class="cart-modal__panel" style="max-width: 420px; width: 100%; text-align: center; border: 2px solid var(--saffron-border); box-shadow: 0 20px 40px rgba(0,0,0,0.5); margin: auto;">
     <div style="margin-bottom: 16px;">
       <img src="assets/tgs-circular.png" alt="TGS Logo" style="width: 64px; height: 64px; border-radius: 50%; border: 3px solid var(--saffron-gold);">
       <h2 style="font-family: var(--font-heading); font-size: 1.5rem; color: var(--text-dark); margin-top: 10px;">Admin Authentication</h2>
