@@ -1023,8 +1023,12 @@ function initMenuCart() {
     msg += `💰 *TOTAL AMOUNT: ₹${total}*\n`;
     msg += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
-    msg += `💳 *TAP TO PAY VIA UPI (PhonePe / GPay / Paytm):*\n`;
+    msg += `📱 *TAP TO PAY VIA UPI (PhonePe / GPay / Paytm):*\n`;
     msg += `upi://pay?pa=9701325292@okbizaxis&pn=TGS%20ChefChoice&am=${total}&cu=INR\n\n`;
+
+    msg += `📸 *PAYMENT & ORDER VERIFICATION:*\n`;
+    msg += `• If paying via UPI, tap the link above (Mobile) and reply with a screenshot of your payment receipt.\n`;
+    msg += `• If paying Cash on Delivery / Counter Pickup, reply "CASH" in this chat.\n\n`;
 
     msg += `_Order placed via tgs-chef-choice.vercel.app_`;
 

@@ -669,6 +669,9 @@ function setupModals() {
 
   closeQrBtn?.addEventListener('click', () => qrModal?.classList.remove('open'));
 
+  document.getElementById('qrTabDynamic')?.addEventListener('click', () => showDynamicQr(currentModalAmount));
+  document.getElementById('qrTabOfficial')?.addEventListener('click', showOfficialQr);
+
   copyBtn?.addEventListener('click', () => {
     const amountText = document.getElementById('qrAmount')?.textContent.replace(/[^0-9]/g, '') || '0';
     const upiUrl = `upi://pay?pa=9701325292@okbizaxis&pn=TGS%20ChefChoice&am=${amountText}&cu=INR`;
@@ -876,10 +879,12 @@ window.confirmOrder = function(orderId) {
   let msg = `Namaste! 🙏 Order Received & Confirmed ✅\n\n`;
   msg += `Order ID: ${row.orderId}\n`;
   msg += `Customer Name: ${row.name}\n`;
-  msg += `Total Bill: ₹${row.totalAmount}\n`;
-  msg += `Prep & Delivery Time: ~20-25 minutes\n\n`;
-  msg += `💳 *PAY NOW VIA UPI (PhonePe / GPay / Paytm):*\n`;
+  msg += `Total Bill Amount: ₹${row.totalAmount}\n`;
+  msg += `Est. Prep & Delivery Time: ~20-25 minutes\n\n`;
+  msg += `📱 *TAP TO PAY VIA UPI (Mobile Only):*\n`;
   msg += `upi://pay?pa=9701325292@okbizaxis&pn=TGS%20ChefChoice&am=${row.totalAmount}&cu=INR\n\n`;
+  msg += `📸 *PAYMENT VERIFICATION:*\n`;
+  msg += `If you paid via UPI, please reply with a screenshot of your payment receipt in this chat so we can mark your order as PAID ✅ in our kitchen console.\n\n`;
   msg += `Looking forward to serving you delicious food! 🍽️\n`;
   msg += `- TGS ChefChoice Kasibugga`;
 
@@ -994,14 +999,47 @@ function exportToCsv() {
   document.body.removeChild(link);
 }
 
-// Dynamic UPI QR Modal Launcher
-window.openQrModal = function(amount) {
-  const modal = document.getElementById('qrModal');
+let currentModalAmount = 0;
+
+function showDynamicQr(amount) {
   const qrImg = document.getElementById('qrImage');
-  const amtEl = document.getElementById('qrAmount');
+  const subText = document.getElementById('qrSubText');
+  const tabDyn = document.getElementById('qrTabDynamic');
+  const tabOff = document.getElementById('qrTabOfficial');
+
+  const upiUrl = `upi://pay?pa=9701325292@okbizaxis&pn=TGS%20ChefChoice&am=${amount}&cu=INR`;
+  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(upiUrl)}`;
+
+  if (qrImg) qrImg.src = qrApiUrl;
+  if (subText) subText.textContent = `Scan with PhonePe, GPay, or Paytm — Amount ₹${amount} is 100% PRE-FILLED & LOCKED automatically!`;
+
+  if (tabDyn) { tabDyn.style.background = 'var(--saffron-gold)'; tabDyn.style.color = '#FFF'; }
+  if (tabOff) { tabOff.style.background = '#E2E8F0'; tabOff.style.color = 'var(--text-dark)'; }
+}
+
+function showOfficialQr() {
+  const qrImg = document.getElementById('qrImage');
+  const subText = document.getElementById('qrSubText');
+  const tabDyn = document.getElementById('qrTabDynamic');
+  const tabOff = document.getElementById('qrTabOfficial');
 
   if (qrImg) qrImg.src = 'assets/tgs-qr.jpeg';
-  if (amtEl) amtEl.textContent = `₹${amount}`;
+  if (subText) subText.textContent = 'Official TGS ChefChoice Google Pay Poster (Customer enters amount manually).';
+
+  if (tabOff) { tabOff.style.background = 'var(--saffron-gold)'; tabOff.style.color = '#FFF'; }
+  if (tabDyn) { tabDyn.style.background = '#E2E8F0'; tabDyn.style.color = 'var(--text-dark)'; }
+}
+
+// Dynamic UPI QR Modal Launcher
+window.openQrModal = function(amount) {
+  currentModalAmount = amount || 0;
+  const modal = document.getElementById('qrModal');
+  const amtEl = document.getElementById('qrAmount');
+
+  if (amtEl) amtEl.textContent = `₹${currentModalAmount}`;
+
+  // Default to Dynamic Auto-Lock Amount QR mode
+  showDynamicQr(currentModalAmount);
 
   if (modal) modal.classList.add('open');
 };
